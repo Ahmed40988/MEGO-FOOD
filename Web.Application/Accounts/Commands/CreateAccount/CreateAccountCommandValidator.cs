@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Web.Application.Accounts.AccountDTO;
+
+namespace Web.Application.Accounts.Commands.CreateAccount
+{
+    public class CreateAccountCommandValidator : AbstractValidator<CreateAccountCommand>
+    {
+            public CreateAccountCommandValidator()
+        {
+            RuleFor(x => x.Email)
+              .NotEmpty()
+              .EmailAddress();
+
+
+            RuleFor(x => x.Passsword)
+    .NotEmpty()
+    .MinimumLength(8).WithMessage("Password must be at least 8 characters long")
+    .MaximumLength(12).WithMessage("Password must not exceed 12 characters")
+    .Matches(PasswordRegexPatterns.Password).WithMessage("Password must contain uppercase and lowercase letters, numbers, and special characters");
+
+
+
+
+        }
+        }
+    }
+

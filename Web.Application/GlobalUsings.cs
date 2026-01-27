@@ -1,0 +1,14 @@
+﻿global using ErrorOr;
+global using Mapster;
+global using MediatR;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Web.Application.Mapping;
+global using Web.Domain.Constants;
+global using Microsoft.AspNetCore.Http;
+global using Web.Domain.Restaurants;
+global using static System.Net.Mime.MediaTypeNames;
+global using Web.Application.Common.Interfaces;
+global using FluentValidation;
+global using Error = ErrorOr.Error;
+global using Result = ErrorOr.Result;

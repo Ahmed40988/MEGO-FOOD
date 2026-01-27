@@ -1,0 +1,74 @@
+﻿using ErrorOr;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Web.Domain.BaseModels;
+using Web.Domain.Restaurants;
+
+namespace Web.Domain.MenuCategories
+{
+    public class MenuCategory : BaseModel
+    {
+        public Guid Id { get; private set; }
+        public string Name { get; private set; } = string.Empty;
+        public string Description { get; private set; } = string.Empty;
+
+        public Guid RestaurantCategoryId { get; private set; }
+        public Restaurant restaurantCategory { get; private set; } = default!;
+
+        private readonly List<Product> _products = new();
+        public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
+    
+
+
+        private MenuCategory() { }
+
+        public MenuCategory(
+          string name,
+          string description,
+          Guid restaurantcategoryid)
+        {
+            Id = Guid.NewGuid();
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Description = description ?? throw new ArgumentNullException(nameof(description));
+            RestaurantCategoryId = restaurantcategoryid;
+        }
+
+        public ErrorOr<Success> AddProduct(Product product)
+        {
+            if (product is null)
+                return MenuCategoryErrors.productCategoryisNull;
+
+            if (_products.Any(m => m.Name == product.Name))
+                return MenuCategoryErrors.DuplicatedProduct;
+
+            _products.Add(product);
+            return Result.Success;
+        }
+        public ErrorOr<Success> Deleteproduct(Guid productId)
+        {
+            if (productId == Guid.Empty)
+                return MenuCategoryErrors.productCategoryisNull;
+
+            var proudct = _products
+                .FirstOrDefault(m => m.Id == productId);
+
+            if (proudct is null)
+                return MenuCategoryErrors.productCategoryNotFound;
+
+            _products.Remove(proudct);
+
+            return Result.Success;
+        }
+
+        public void Delete(string updatedById)
+        {
+            SoftDelete(updatedById);
+            _products.Clear();
+        }
+
+
+    }
+}

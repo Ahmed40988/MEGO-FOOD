@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Web.Application.Common.Interfaces
+{
+    public interface IProductRepository
+    {
+        Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<Product>> GetByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<Product>> SearchAsync(string keyword, CancellationToken cancellationToken = default);
+        Task<List<Product>> ListBymenuCategoryIdAsync(Guid MenuCategoryId);
+        Task<bool> ExistsAsync(Guid productId, CancellationToken cancellationToken = default);
+
+        Task AddAsync(Product product, CancellationToken cancellationToken = default);
+        Task UpdateAsync(Product product, CancellationToken cancellationToken = default);
+        Task DeleteAsync(Product product, CancellationToken cancellationToken = default);
+        Task RemoveRangeAsync(List<Product> products);
+    }
+
+}
