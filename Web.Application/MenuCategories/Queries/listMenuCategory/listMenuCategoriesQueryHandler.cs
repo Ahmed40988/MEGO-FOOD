@@ -21,7 +21,7 @@ namespace Web.Application.MenuCategories.Queries.listMenuCategory
                 return Error.NotFound(description: "Restaurant Category not found");
             }
 
-            return await _menuCategoryRepository.ListByrestaurantCategoryIdAsync(query.RestaurantCatgoryId);
+            return await _menuCategoryRepository.ListByRestaurantIdAsync(query.RestaurantCatgoryId);
         }
     }
 }

@@ -37,21 +37,21 @@ namespace Web.Infrastructure.MenuCategories.Persistence
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         }
 
-        public async Task<IReadOnlyList<MenuCategory>> GetByRestaurantCategoryAsync(
-            Guid categoryId,
+        public async Task<IReadOnlyList<MenuCategory>> GetByRestaurantIdAsync(
+            Guid RestaurantId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.MenuCategories
                 .AsNoTracking()
-                .Where(c => c.RestaurantCategoryId == categoryId)
+                .Where(c => c.RestaurantId == RestaurantId)
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<MenuCategory>> ListByrestaurantCategoryIdAsync(Guid restaurantCategoryId)
+        public async Task<List<MenuCategory>> ListByRestaurantIdAsync(Guid RestaurantId)
         {
             return await _dbContext.MenuCategories
                 .AsNoTracking()
-                .Where(c => c.RestaurantCategoryId == restaurantCategoryId)
+                .Where(c => c.RestaurantId == RestaurantId)
                 .ToListAsync();
         }
 

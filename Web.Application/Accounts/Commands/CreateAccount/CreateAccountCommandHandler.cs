@@ -27,6 +27,39 @@ namespace Web.Application.Accounts.Commands.CreateAccount
 
         public async Task<ErrorOr<Success>> Handle(CreateAccountCommand Command, CancellationToken cancellationToken)
         {
+            var IsuserDeleted=await _userRepository.ExistSameEmailandDeletedAsync(Command.Email,cancellationToken);
+                //Restore user if register by email deleted by admin
+            if (IsuserDeleted)
+            {
+
+                var Deleteduser = await _userManager.FindByEmailAsync(Command.Email);
+                Deleteduser.Restore("System");
+
+                var resetToken =
+         await _userManager.GeneratePasswordResetTokenAsync(Deleteduser);
+
+                var resetResult = await _userManager.ResetPasswordAsync(
+                    Deleteduser,
+                    resetToken,
+                    Command.Passsword);
+
+                if (!resetResult.Succeeded)
+                {
+                    return resetResult.Errors
+                        .Select(e => Error.Validation(
+                            code: $"Identity.{e.Code}",
+                            description: e.Description))
+                        .First();
+                }
+                    var otp = new Random().Next(100000, 999999).ToString();
+                    _memoryCache.Set($"EmailOTP_{Command.Email}", otp, TimeSpan.FromMinutes(5));
+                    await _emailService.SendConfirmationEmail(Deleteduser, otp);
+                return Result.Success;
+
+            }
+
+
+
             var userExists = await _userRepository.ExistsByEmailAsync(Command.Email, cancellationToken);
 
             if (userExists)

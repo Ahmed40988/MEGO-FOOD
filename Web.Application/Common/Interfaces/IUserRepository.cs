@@ -10,6 +10,7 @@ namespace Web.Application.Common.Interfaces
     {
         Task<bool> ExistsAsync(string userId, CancellationToken cancellationToken);
         Task<bool> ExistsByEmailAsync(string Email, CancellationToken cancellationToken);
+        Task<bool> ExistSameEmailandDeletedAsync(string Email, CancellationToken cancellationToken);
     }
 
 }

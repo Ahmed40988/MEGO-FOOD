@@ -15,8 +15,8 @@ namespace Web.Domain.MenuCategories
         public string Name { get; private set; } = string.Empty;
         public string Description { get; private set; } = string.Empty;
 
-        public Guid RestaurantCategoryId { get; private set; }
-        public Restaurant restaurantCategory { get; private set; } = default!;
+        public Guid RestaurantId { get; private set; }
+        public Restaurant restaurant { get; private set; } = default!;
 
         private readonly List<Product> _products = new();
         public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
@@ -33,7 +33,7 @@ namespace Web.Domain.MenuCategories
             Id = Guid.NewGuid();
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Description = description ?? throw new ArgumentNullException(nameof(description));
-            RestaurantCategoryId = restaurantcategoryid;
+            RestaurantId = restaurantcategoryid;
         }
 
         public ErrorOr<Success> AddProduct(Product product)

@@ -51,7 +51,7 @@ namespace Web.Application.Accounts.Commands.RefreshToken
                 refreshTokenExpiration
             );
 
-            user.RefreshTokens.Add(newRefreshToken);
+            user.AddrefreshTokens(newRefreshToken);
 
             await _userManager.UpdateAsync(user);
 

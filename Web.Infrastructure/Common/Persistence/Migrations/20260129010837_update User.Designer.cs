@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Common.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Common.Persistence.Data;
 namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260129010837_update User")]
+    partial class updateUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,7 +335,7 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("RestaurantId")
+                    b.Property<Guid>("RestaurantCategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UpdatedByid")
@@ -343,7 +346,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RestaurantId");
+                    b.HasIndex("RestaurantCategoryId");
 
                     b.ToTable("MenuCategories", (string)null);
                 });
@@ -470,7 +473,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("userid");
 
-                    b.ToTable("Restaurants", (string)null);
+                    b.ToTable("RestaurantCategories", (string)null);
                 });
 
             modelBuilder.Entity("Web.Domain.Users.AppUser", b =>
@@ -648,13 +651,13 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Web.Domain.MenuCategories.MenuCategory", b =>
                 {
-                    b.HasOne("Web.Domain.Restaurants.Restaurant", "restaurant")
+                    b.HasOne("Web.Domain.Restaurants.Restaurant", "restaurantCategory")
                         .WithMany("MenuCategories")
-                        .HasForeignKey("RestaurantId")
+                        .HasForeignKey("RestaurantCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("restaurant");
+                    b.Navigation("restaurantCategory");
                 });
 
             modelBuilder.Entity("Web.Domain.OrderItems.orderitem", b =>

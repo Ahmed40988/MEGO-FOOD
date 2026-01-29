@@ -6,7 +6,7 @@ public class RestaurantConfiguration
 {
     public void Configure(EntityTypeBuilder<Restaurant> builder)
     {
-        builder.ToTable("RestaurantCategories");
+        builder.ToTable("Restaurants");
 
         builder.HasKey(r => r.Id);
 
@@ -26,8 +26,8 @@ public class RestaurantConfiguration
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(r => r.MenuCategories)
-               .WithOne(m => m.restaurantCategory)
-               .HasForeignKey(m => m.RestaurantCategoryId);
+               .WithOne(m => m.restaurant)
+               .HasForeignKey(m => m.RestaurantId);
 
         builder.Navigation(r => r.MenuCategories)
                .UsePropertyAccessMode(PropertyAccessMode.Field);

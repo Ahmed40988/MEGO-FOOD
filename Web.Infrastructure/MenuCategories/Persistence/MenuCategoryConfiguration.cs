@@ -19,9 +19,9 @@ namespace Web.Infrastructure.MenuCategories.Persistence
             builder.Property(m => m.Description)
                    .HasMaxLength(500);
 
-            builder.HasOne(m => m.restaurantCategory)
+            builder.HasOne(m => m.restaurant)
                    .WithMany(r => r.MenuCategories)
-                   .HasForeignKey(m => m.RestaurantCategoryId);
+                   .HasForeignKey(m => m.RestaurantId);
 
             builder.HasMany(m => m.Products)
                    .WithOne(p => p.MenuCategory)

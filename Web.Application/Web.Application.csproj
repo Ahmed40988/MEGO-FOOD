@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Accounts\Queries\" />
+    <Folder Include="Admins\Commands\" />
     <Folder Include="copy\Commands\" />
     <Folder Include="copy\Queries\" />
   </ItemGroup>

@@ -21,7 +21,7 @@ namespace Web.Domain.BaseModels
             Updatedon = DateTime.UtcNow;
         }
 
-        protected void SoftDelete(string updatedById)
+        internal void SoftDelete(string updatedById)
         {
             if (Deleted) return;
 

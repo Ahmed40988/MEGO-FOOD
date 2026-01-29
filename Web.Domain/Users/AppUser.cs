@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Domain.Addresses;
+using Web.Domain.BaseModels;
 using Web.Domain.MenuCategories;
 using Web.Domain.RefreshTokens;
 using Web.Domain.Restaurants;
@@ -17,12 +18,46 @@ namespace Web.Domain.Users
         public string FullName { get; set; } = string.Empty;
         public Gender gender { get; set; }
         public string? PhotoURl { get; set; } = string.Empty;
+        public DateTime Createdon { get; private set; } = DateTime.UtcNow;
+        public bool Deleted { get; private set; }
+        public string? UpdatedByid { get; private set; }
+        public DateTime? Updatedon { get; private set; }
 
         public DateOnly DateOfBirth { get; set; }
-        public List<RefreshToken> RefreshTokens { get; set; } = [];
-        public ICollection<Address> Addresses { get; set; } = [];
+
+        private readonly List<RefreshToken> _refreshTokens = new();
+        public IReadOnlyCollection<RefreshToken> RefreshTokens=> _refreshTokens.AsReadOnly();
+
+        private readonly List<Address> _addresses = new();
+        public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
 
 
+        private readonly List<Restaurant> _restaurant = new();
+        public IReadOnlyCollection<Restaurant> Restaurant => _restaurant.AsReadOnly();
+
+
+
+        private void Touch(string updatedById)
+        {
+            UpdatedByid = updatedById;
+            Updatedon = DateTime.UtcNow;
+        }
+
+        private void SoftDelete(string updatedById)
+        {
+            if (Deleted) return;
+
+            Deleted = true;
+            Touch(updatedById);
+        }
+
+        public void Restore(string updatedById)
+        {
+            if (!Deleted) return;
+
+            Deleted = false;
+            Touch(updatedById);
+        }
         private AppUser() { }
 
         public AppUser( string email)
@@ -31,35 +66,49 @@ namespace Web.Domain.Users
             UserName = email;
         }
 
-        private readonly List<Restaurant> _restaurant = new();
-        public IReadOnlyCollection<Restaurant> Restaurant=> _restaurant.AsReadOnly();
-
-
-        public ErrorOr<Success> AddRestaurant(Restaurant restaurantCategory)
+        public ErrorOr<Success> AddrefreshTokens(RefreshToken  refreshToken)
         {
-            if (restaurantCategory is null)
-                return RestaurantsErrors.RestaurantisNull;
+            if(_refreshTokens.Contains(refreshToken))
+                return RefreshTokensErrors.DuplicatedRefreshToken;
 
-            if (_restaurant.Any(m => m.Name == restaurantCategory.Name))
-                return RestaurantsErrors.DuplicatedMenuCategory;
+            if (refreshToken is null)
+                return RefreshTokensErrors.RefreshTokenIsnulll;
 
-            _restaurant.Add(restaurantCategory);
+            _refreshTokens.Add(refreshToken);
             return Result.Success;
         }
-        public ErrorOr<Success> DeleteRestaurant(Guid restaurantCategoryId)
+
+        public ErrorOr<Success> AddRestaurant(Restaurant restaurant)
         {
-            if (restaurantCategoryId == Guid.Empty)
+            if (restaurant is null)
+                return RestaurantsErrors.RestaurantisNull;
+
+            if (_restaurant.Any(m => m.Name == restaurant.Name))
+                return RestaurantsErrors.DuplicatedMenuCategory;
+
+            _restaurant.Add(restaurant);
+            return Result.Success;
+        }
+        public ErrorOr<Success> DeleteRestaurant(Guid restaurantid)
+        {
+            if (restaurantid == Guid.Empty)
                 return RestaurantsErrors.MenuCategoryisNull;
 
-            var restaurantCategory = _restaurant
-                .FirstOrDefault(m => m.Id == restaurantCategoryId);
+            var restaurant = _restaurant
+                .FirstOrDefault(m => m.Id == restaurantid);
 
-            if (restaurantCategory is null)
+            if (restaurant is null)
                 return RestaurantsErrors.MenuCategoryNotFound;
 
-            _restaurant.Remove(restaurantCategory);
+            _restaurant.Remove(restaurant);
 
             return Result.Success;
+        }
+
+        public void Delete(string updatedById)
+        {
+          SoftDelete(updatedById);
+            _restaurant.Clear();
         }
 
     }

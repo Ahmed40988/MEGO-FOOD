@@ -14,12 +14,16 @@ namespace Web.Infrastructure.Users.Persistence
 
         public async Task<bool> ExistsAsync(string userId, CancellationToken cancellationToken)
         {
-            return await _dbContext.Users.AnyAsync(x => x.Id == userId, cancellationToken);
+            return await _dbContext.Users.AnyAsync(x => x.Id == userId&&!x.Deleted, cancellationToken);
         }
 
         public async Task<bool> ExistsByEmailAsync(string Email, CancellationToken cancellationToken)
         {
-            return await _dbContext.Users.AnyAsync(x => x.Email==Email, cancellationToken);
+            return await _dbContext.Users.AnyAsync(x => x.Email==Email && !x.Deleted, cancellationToken);
+        }
+        public async Task<bool> ExistSameEmailandDeletedAsync(string Email, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Users.AnyAsync(x => x.Email==Email && x.Deleted, cancellationToken);
         }
     }
 }
