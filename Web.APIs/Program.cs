@@ -21,10 +21,6 @@ namespace Web.APIs
             builder.Host.UseSerilog((Context, configuration) =>
        configuration.ReadFrom.Configuration(Context.Configuration)
        );
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-
             var app = builder.Build();
 
 

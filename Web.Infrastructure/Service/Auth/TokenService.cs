@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ErrorOr;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Dynamic.Core.Tokenizer;
@@ -11,13 +13,23 @@ namespace Web.Infrastructure.Service.Auth
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<TokenService> _logger;
 
-        public TokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration,ILogger<TokenService> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
         public async Task<(string Token,int expiresIn)> GenerateTokenAsync(AppUser user, UserManager<AppUser> userManager)
         {
+
+            _logger.LogInformation(
+    "SIGN KEY (GEN): {Key}",
+    Convert.ToBase64String(
+        Encoding.UTF8.GetBytes(_configuration["JWT:Key"]!.Trim())
+    )
+);
+
             var userClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -32,14 +44,15 @@ namespace Web.Infrastructure.Service.Auth
                 userClaims.Add(new Claim(ClaimTypes.Role, Role));
             }
 
-            var authKeyInByets = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            var authKeyInByets = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]!.Trim()));
 
             var JwtObject = new JwtSecurityToken(
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
                 claims: userClaims,
-                expires: DateTime.Now.AddMinutes(int.Parse(_configuration["JWT:ExpiryMinutes"])),
-                signingCredentials: new SigningCredentials(authKeyInByets, SecurityAlgorithms.HmacSha256Signature)
+               expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JWT:ExpiryMinutes"])),
+                signingCredentials: new SigningCredentials(authKeyInByets, SecurityAlgorithms.HmacSha256
+)
             );
             var expiresIn = int.Parse(_configuration["JWT:ExpiryMinutes"]);
 
@@ -47,30 +60,77 @@ namespace Web.Infrastructure.Service.Auth
         }
 
 
-        public string? ValidateToken(string token)
+        //public string? ValidateToken(string token)
+        //{
+        //    _logger.LogInformation(
+        //        "SIGN KEY (GEN): {Key}",
+        //        Convert.ToBase64String(
+        //            Encoding.UTF8.GetBytes(_configuration["JWT:Key"]!.Trim())
+        //        )
+        //    );
+
+
+        //    var TokenHandler = new JwtSecurityTokenHandler();
+        //    var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]!.Trim()));
+
+        //    try
+        //    {
+        //        TokenHandler.ValidateToken(token, new TokenValidationParameters
+        //        {
+        //            IssuerSigningKey = symmetricSecurityKey,
+        //            ValidateIssuerSigningKey = true,
+        //            ValidateIssuer = false,
+        //            ValidateAudience = false,
+        //        }, out SecurityToken validatedToken
+        //        );
+        //        var jwtToken = (JwtSecurityToken)validatedToken;
+        //        return jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "JWT validation failed");
+
+        //        return null;
+        //    }
+
+        //}
+
+
+        public string? ValidateAccessToken(string token)
         {
-            var TokenHandler = new JwtSecurityTokenHandler();
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
-
-            try
-            {
-                TokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    IssuerSigningKey = symmetricSecurityKey,
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                }, out SecurityToken validatedToken
-                );
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                return jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
+            return Validate(token, validateLifetime: true);
         }
+
+        public string? GetUserIdFromExpiredToken(string token)
+        {
+            return Validate(token, validateLifetime: false);
+        }
+
+
+        private string? Validate(string token, bool validateLifetime)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["JWT:Key"]!.Trim())
+            );
+
+            var principal = handler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+
+                ValidateIssuer = false,
+                ValidateAudience = false,
+
+                ValidateLifetime = validateLifetime,
+                ClockSkew = TimeSpan.Zero
+            }, out _);
+
+            return principal.Claims
+                .First(x => x.Type == ClaimTypes.NameIdentifier)
+                .Value;
+        }
+
     }
 }

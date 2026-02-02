@@ -65,7 +65,29 @@ namespace Web.Domain.Users
             Email =email;   
             UserName = email;
         }
+        public void UpdateProfile(
+    string fullName,
+    string phone,
+    DateOnly dateOfBirth,
+    Address address)
+        {
+            FullName = fullName;
+            PhoneNumber = phone;
+            DateOfBirth = dateOfBirth;
+            AddAddress(address);
+        }
 
+        public ErrorOr<Success> AddAddress(Address  address)
+        {
+            if(_addresses.Contains(address))
+                return addressErrors.Duplicatedaddress;
+
+            if (address is null)
+                return addressErrors.addressIsnulll;
+
+            _addresses.Add(address);
+            return Result.Success;
+        }
         public ErrorOr<Success> AddrefreshTokens(RefreshToken  refreshToken)
         {
             if(_refreshTokens.Contains(refreshToken))
@@ -109,6 +131,8 @@ namespace Web.Domain.Users
         {
           SoftDelete(updatedById);
             _restaurant.Clear();
+            _refreshTokens.Clear();
+            _addresses.Clear();
         }
 
     }

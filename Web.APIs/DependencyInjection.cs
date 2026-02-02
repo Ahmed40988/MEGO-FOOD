@@ -1,7 +1,10 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Web.Application.Accounts.AccountDTO;
 using Web.Application.Common.Interfaces;
+using Web.Domain.Users;
+using Web.Infrastructure;
 using Web.Infrastructure.Common.Persistence.Data;
 using Web.Infrastructure.Service.Auth;
 using Web.Infrastructure.Service.Communication.Email;
@@ -12,18 +15,15 @@ namespace Web.APIs
     {
         public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
+
             services
                 .AddControllersConfig()
                 .AddCorsConfig()
                 .AddSwaggerWithAuth()
-               // .AddDatabaseConfig(configuration)
-                  //.AddIdentityConfig()
+                    .AddJwtAuthConfig(configuration)
+                    .AddAuthorizationConfig()
                 .AddEmailConfig(configuration)
-                .AddAppServices()
-               // .AddAuthorizationConfig()
-                .AddFluentValidationConfig()
-                .AddMapsterConfig(configuration)
-                .AddJwtAuthConfig(configuration);
+                .AddAppServices();
 
             return services;
         }
@@ -95,35 +95,6 @@ namespace Web.APIs
 
             return services;
         }
-
-
-        //private static IServiceCollection AddDatabaseConfig(this IServiceCollection services, IConfiguration configuration)
-        //{
-        //    var connectionString = configuration.GetConnectionString("DefaultConnection") ??
-        //        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-        //    services.AddDbContext<AppDbContext>(options =>
-        //        options.UseSqlServer(connectionString));
-
-        //    return services;
-        //}
-
-        //private static IServiceCollection AddIdentityConfig(this IServiceCollection services)
-        //{
-        //    services.AddIdentity<AppUser, IdentityRole>()
-        //        .AddEntityFrameworkStores<AppDbContext>()
-        //        .AddDefaultTokenProviders();
-
-        //    return services;
-        //}
-
-        //private static IServiceCollection AddAuthorizationConfig(this IServiceCollection services)
-        //{
-        //    services.AddAuthorization();
-        //    return services;
-        //}
-
-
         private static IServiceCollection AddEmailConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
@@ -133,61 +104,51 @@ namespace Web.APIs
 
         private static IServiceCollection AddAppServices(this IServiceCollection services)
         {
-            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailSender, EmailService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddMemoryCache();
 
             return services;
         }
-
-        private static IServiceCollection AddFluentValidationConfig(this IServiceCollection services)
-        {
-            services.AddFluentValidationAutoValidation()
-                    .AddValidatorsFromAssemblies(new[]
-                    {
-                        Assembly.GetExecutingAssembly(),
-                        typeof(LoginDTO).Assembly,
-                        typeof(AppDbContext).Assembly
-                    });
-
-            return services;
-        }
-
-        private static IServiceCollection AddMapsterConfig(this IServiceCollection services, IConfiguration configuration)
-        {
-            var baseUrl = configuration["BaseURL"];
-            var mappingConfig = TypeAdapterConfig.GlobalSettings;
-            MapsterConfiguration.RegisterMappings(mappingConfig, baseUrl);
-            services.AddSingleton<IMapper>(new Mapper(mappingConfig));
-
-            return services;
-        }
-
-        private static IServiceCollection AddJwtAuthConfig(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddAuthentication(options =>
+        
+            private static IServiceCollection AddJwtAuthConfig(
+        this IServiceCollection services,
+        IConfiguration configuration)
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+                services.AddAuthentication(options =>
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["JWT:Issuer"],
-                    ValidAudience = configuration["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JWT:Key"] ??
-                            throw new InvalidOperationException("JWT Key is missing")))
-                };
-            });
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
 
+                        ValidIssuer = configuration["JWT:Issuer"],
+                        ValidAudience = configuration["JWT:Audience"],
+
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(
+                                configuration["JWT:Key"]
+                                    ?? throw new InvalidOperationException("JWT Key is missing")
+                            ))
+                    };
+                });
+
+                return services;
+            }
+
+        private static IServiceCollection AddAuthorizationConfig(
+    this IServiceCollection services)
+        {
+            services.AddAuthorization();
             return services;
         }
+
     }
 }

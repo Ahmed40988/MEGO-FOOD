@@ -7,15 +7,18 @@ using Web.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using RefreshTokenEntity = Web.Domain.RefreshTokens.RefreshToken;
+using Microsoft.Extensions.Logging;
 
 
 namespace Web.Application.Accounts.Commands.RefreshToken
 {
     public class RefreshTokenCommandHandler(
+          ILogger<RefreshTokenCommandHandler> logger,
         ITokenService tokenService,
         UserManager<AppUser> userManager
     ) : IRequestHandler<RefreshTokenCommand, ErrorOr<TokenDTO>>
     {
+        private readonly ILogger _logger = logger;
         private readonly ITokenService _tokenService = tokenService;
         private readonly UserManager<AppUser> _userManager = userManager;
 
@@ -23,7 +26,9 @@ namespace Web.Application.Accounts.Commands.RefreshToken
             RefreshTokenCommand command,
             CancellationToken cancellationToken)
         {
-            var userId = _tokenService.ValidateToken(command.Token);
+            _logger.LogInformation("TOKEN VALUE: {Token}", command.Token);
+
+            var userId = _tokenService.GetUserIdFromExpiredToken(command.Token);
             if (userId is null)
                 return Error.Validation("Auth.InvalidJwt", "Invalid JWT token");
 

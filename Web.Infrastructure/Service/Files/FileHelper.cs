@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.IO;
+using Web.Application.Common.Interfaces;
 
 namespace Web.Infrastructure.Services.Files
 {
-    public static class FileHelper
+    public class FileHelper: IFileHelperService
     {
-        public static string UploadFile(IFormFile file, string folderName)
+        public  string UploadFile(IFormFile file, string folderName)
         {
             string folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),
@@ -24,7 +25,7 @@ namespace Web.Infrastructure.Services.Files
             return fileName;
         }
 
-        public static void DeleteFile(string fileName, string folderName)
+        public  void DeleteFile(string fileName, string folderName)
         {
             string filePath = Path.Combine(
                 Directory.GetCurrentDirectory(),

@@ -9,6 +9,8 @@ using Web.Application.Accounts.Commands.VerifyForgotPasswordOtp;
 using Web.Application.Accounts.Commands.ResetPassword;
 using Web.Application.Accounts.Commands.Login;
 using Web.Application.Accounts.Commands.RefreshToken;
+using Web.Application.Accounts.Commands.CompleteProfile;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.APIs.Controllers
 {
@@ -163,6 +165,7 @@ namespace Web.APIs.Controllers
         /// </remarks>
         /// <response code="200">Password reset successfully</response>
         /// <response code="400">Invalid token or password mismatch</response>
+        /// <response code="404">Enter Correct Values!</response>
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(
             [FromBody] ResetPasswordDto request)
@@ -203,6 +206,47 @@ namespace Web.APIs.Controllers
 
             return result.Match(
                 token => Ok(token),
+                errors => ToProblem(errors)
+            );
+        }
+
+        /// <summary>
+        /// Complete user profile information./// </summary>
+        /// <remarks>
+        /// This endpoint allows an authenticated user to complete their profile by
+        /// providing personal information, address details, and an optional profile image.
+        /// <br/><br/>
+        /// The request must be sent as <b>multipart/form-data</b> because it supports file upload.
+        /// </remarks>
+        /// <param name="Request">
+        /// Profile completion data including full name, phone number, date of birth,
+        /// address information, and optional profile image.
+        /// </param>
+        /// <response code="200">
+        /// Profile completed successfully.
+        /// </response>
+        /// <response code="400">
+        /// Invalid request data or validation error.
+        /// </response>
+        /// <response code="401">
+        /// Unauthorized. JWT token is missing or invalid.
+        /// </response>
+        /// <response code="404">
+        /// User not found.
+        /// </response>
+
+        [Authorize]
+        [HttpPost("Complete-Profile")]
+        public async Task<IActionResult> CompleteProfile(
+            [FromForm] CreateProfileRequest Request)
+        {
+            var Userid=User.GetUserId();
+            var commmand = new CompleteProfileCommand(Userid,
+                Request.FullName, Request.Phone, Request.DateOfBirth, Request.Adresss, Request.Image);
+            var result = await _mediator.Send(commmand);
+
+            return result.Match(
+                token => Ok(),
                 errors => ToProblem(errors)
             );
         }

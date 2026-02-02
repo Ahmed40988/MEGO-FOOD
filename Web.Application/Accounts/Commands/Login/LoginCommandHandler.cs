@@ -13,12 +13,10 @@ namespace Web.Application.Accounts.Commands.Login
 {
     public class LoginCommandHandler(
         UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager,
         ITokenService tokenService
     ) : IRequestHandler<LoginCommand, ErrorOr<TokenDTO>>
     {
         private readonly UserManager<AppUser> _userManager = userManager;
-        private readonly SignInManager<AppUser> _signInManager = signInManager;
         private readonly ITokenService _tokenService = tokenService;
 
         public async Task<ErrorOr<TokenDTO>> Handle(
@@ -29,22 +27,20 @@ namespace Web.Application.Accounts.Commands.Login
             if (user is null)
                 return Error.Validation("Auth.InvalidCredentials", "Invalid email or password");
 
-            var result = await _signInManager.PasswordSignInAsync(
-                user, command.Password, false, true);
 
-            if ( user.EmailConfirmed != true)
-                return Error.Forbidden("Auth.EmailNotConfirmed", "Email not confirmed");
+            var isPasswordValid =
+                await _userManager.CheckPasswordAsync(
+                    user, command.Password);
 
-            if (!result.Succeeded)
-            {
-                if (result.IsNotAllowed)
-                    return Error.Forbidden("Auth.EmailNotConfirmed", "Email not confirmed");
+            if (!isPasswordValid)
+                return Error.Validation(
+                    "Auth.InvalidCredentials",
+                    "Invalid email or password");
 
-                if (result.IsLockedOut)
-                    return Error.Forbidden("Auth.Locked", "User is locked");
-
-                return Error.Validation("Auth.InvalidCredentials", "Invalid email or password");
-            }
+            if (await _userManager.IsLockedOutAsync(user))
+                return Error.Forbidden(
+                    "Auth.Locked",
+                    "User is locked");
 
             var jwt = await _tokenService.GenerateTokenAsync(user, userManager);
             var refreshTokenValue = Convert.ToBase64String(
