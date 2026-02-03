@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Web.Application.Common.Interfaces;
+﻿using Web.Application.Common.Interfaces;
 using Web.Infrastructure.Common.Persistence.Data;
 
 namespace Web.Infrastructure.Products.Persistence

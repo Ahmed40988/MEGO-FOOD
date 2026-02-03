@@ -4,22 +4,22 @@
     {
         public CreateProfileRequestValidator()
         {
-      
+
             RuleFor(x => x.FullName)
                 .NotEmpty().WithMessage("Full name is required.")
                 .MaximumLength(100).WithMessage("Full name must not exceed 100 characters.");
 
-        
+
             RuleFor(x => x.Phone)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Matches(@"^(\+?\d{10,15})$").WithMessage("Phone number must be valid and contain 10 to 15 digits.");
 
-         
+
             RuleFor(x => x.DateOfBirth)
                 .NotEmpty().WithMessage("Date of birth is required.")
                 .Must(BeAValidAge).WithMessage("You must be at least 13 years old.");
 
-      
+
             RuleFor(x => x.Image)
                 .NotNull().WithMessage("Profile image is required.")
                 .Must(file => file.Length > 0).WithMessage("Profile image cannot be empty.")

@@ -1,9 +1,4 @@
 ﻿using ErrorOr;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Web.Domain.BaseCategories;
 using Web.Domain.BaseModels;
 using Web.Domain.MenuCategories;
@@ -11,12 +6,12 @@ using Web.Domain.Users;
 
 namespace Web.Domain.Restaurants
 {
-    public class Restaurant:BaseModel
+    public class Restaurant : BaseModel
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public string Description { get; private set; } = string.Empty;
-        public string userid { get; private set; }= string.Empty;
+        public string userid { get; private set; } = string.Empty;
         public AppUser AppUser { get; private set; } = default!;
         public Guid BaseCatgoryId { get; private set; }
         public BaseCategory BaseCatgory { get; private set; } = default!;
@@ -65,21 +60,21 @@ namespace Web.Domain.Restaurants
             return Result.Success;
         }
 
-        public void Rename(string newName,string UpdatedByid) 
+        public void Rename(string newName, string UpdatedByid)
         {
             Name = newName;
-            Touch( UpdatedByid);
-        
+            Touch(UpdatedByid);
+
         }
         public void ChangeDescription(string newDescription, string updatedById)
         {
-           Description= newDescription;
+            Description = newDescription;
             Touch(updatedById);
         }
 
         public void ChangeOwner(string newUserId, string updatedById)
         {
-            userid=newUserId;
+            userid = newUserId;
             Touch(updatedById);
         }
 
@@ -98,7 +93,7 @@ namespace Web.Domain.Restaurants
         public void Delete(string updatedById)
         {
             SoftDelete(updatedById);
-            _menuCategories.Clear(); 
+            _menuCategories.Clear();
         }
 
 

@@ -13,7 +13,7 @@ namespace Web.Application.Restaurants.Commands.DeleteRestaurants
         public async Task<ErrorOr<Deleted>> Handle(DeleteRestaurantCommand command, CancellationToken cancellationToken)
         {
             var RestaurantCategoy = await _restaurantCategoryRepository
-                .GetByIdAsync(command.CategoryId,cancellationToken);
+                .GetByIdAsync(command.CategoryId, cancellationToken);
 
             if (RestaurantCategoy == null)
                 return Error.NotFound(description: "restaurant is Already Deleted!");
@@ -23,7 +23,7 @@ namespace Web.Application.Restaurants.Commands.DeleteRestaurants
             if (user == null)
                 return Error.Unexpected(description: "User is not found for this restaurant ");
 
-      var result=  user.DeleteRestaurant(command.CategoryId);
+            var result = user.DeleteRestaurant(command.CategoryId);
             if (result.IsError)
                 return result.Errors;
 

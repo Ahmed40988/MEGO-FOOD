@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Web.Application.Accounts.Commands.VerifyForgotPasswordOtp;
+﻿using Web.Application.Accounts.Commands.VerifyForgotPasswordOtp;
 
 namespace Web.Application.Accounts.Commands.VerifyForgotPasswordOTP
 {
-    public class VerifyForgotPasswordOtpCommandValidator:AbstractValidator<VerifyForgotPasswordOtpCommand>
+    public class VerifyForgotPasswordOtpCommandValidator : AbstractValidator<VerifyForgotPasswordOtpCommand>
     {
         public VerifyForgotPasswordOtpCommandValidator()
         {

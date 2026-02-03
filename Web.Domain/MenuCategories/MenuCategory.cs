@@ -1,9 +1,4 @@
 ﻿using ErrorOr;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Web.Domain.BaseModels;
 using Web.Domain.Restaurants;
 
@@ -20,7 +15,7 @@ namespace Web.Domain.MenuCategories
 
         private readonly List<Product> _products = new();
         public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
-    
+
 
 
         private MenuCategory() { }

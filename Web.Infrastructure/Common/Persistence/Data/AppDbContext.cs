@@ -1,22 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Web.Application.Common.Interfaces;
 using Web.Domain.BaseCategories;
 using Web.Domain.MenuCategories;
 using Web.Domain.OrderItems;
 using Web.Domain.Orders;
 using Web.Domain.Restaurants;
-using Web.Domain.Users;
 
 namespace Web.Infrastructure.Common.Persistence.Data
 {
-    public class AppDbContext : IdentityDbContext<AppUser>,IUnitOfWork
+    public class AppDbContext : IdentityDbContext<AppUser>, IUnitOfWork
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         { }
@@ -25,14 +18,14 @@ namespace Web.Infrastructure.Common.Persistence.Data
         {
             await SaveChangesAsync();
         }
-            public DbSet<BaseCategory> BaseCategories => Set<BaseCategory>();
-            public DbSet<Restaurant> Restaurants => Set<Restaurant>();
-            public DbSet<MenuCategory> MenuCategories => Set<MenuCategory>();
-            public DbSet<Product> Products => Set<Product>();
-            public DbSet<Order> Orders => Set<Order>();
-            public DbSet<orderitem> Orderitems => Set<orderitem>();
+        public DbSet<BaseCategory> BaseCategories => Set<BaseCategory>();
+        public DbSet<Restaurant> Restaurants => Set<Restaurant>();
+        public DbSet<MenuCategory> MenuCategories => Set<MenuCategory>();
+        public DbSet<Product> Products => Set<Product>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<orderitem> Orderitems => Set<orderitem>();
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder); // Important for Identity
 

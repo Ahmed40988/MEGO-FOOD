@@ -1,7 +1,4 @@
-﻿using ErrorOr;
-using MediatR;
-
-namespace Web.Application.Accounts.Commands.ResetPassword
+﻿namespace Web.Application.Accounts.Commands.ResetPassword
 {
     public record ResetPasswordCommand(
         string Email,

@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace Web.Application.Accounts.Commands.Login
+﻿namespace Web.Application.Accounts.Commands.Login
 {
     public class LoginCommandValidator : AbstractValidator<LoginCommand>
     {

@@ -1,13 +1,8 @@
-﻿using ErrorOr;
-using MediatR;
-using Web.Application.Common.Interfaces;
-using Web.Application.Accounts.AccountDTO;
-using Web.Domain.RefreshTokens;
-using Web.Domain.Users;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
+using Web.Application.Accounts.AccountDTO;
+using Web.Domain.Users;
 using RefreshTokenEntity = Web.Domain.RefreshTokens.RefreshToken;
-using Microsoft.Extensions.Logging;
 
 
 namespace Web.Application.Accounts.Commands.RefreshToken

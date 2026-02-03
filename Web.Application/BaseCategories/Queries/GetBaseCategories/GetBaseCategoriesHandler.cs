@@ -1,11 +1,10 @@
-using MediatR;
-using Web.Application.BaseCategories;
+using Web.Application.BaseCategories.BaseCategoryDTO;
 using Web.Domain.BaseCategories;
 
 namespace Web.Application.BaseCategories.Queries.GetBaseCategories;
 
 public class GetBaseCategoriesHandler
-    : IRequestHandler<GetBaseCategoriesQuery, ErrorOr<List<BaseCategory>>>
+    : IRequestHandler<GetBaseCategoriesQuery, ErrorOr<List<BaseCategoryResponse>>>
 {
     private readonly IBaseCategoryRepository _repository;
 
@@ -14,12 +13,21 @@ public class GetBaseCategoriesHandler
         _repository = repository;
     }
 
-    public async Task<ErrorOr<List<BaseCategory>>> Handle(GetBaseCategoriesQuery request, CancellationToken cancellationToken)
-       { 
-        var listcategories= await _repository.GetAllAsync(cancellationToken);
-                     return listcategories is null ?
-                 Error.NotFound(description: "BaseCategory is  Empty !")
-                 :listcategories.ToList();
+    public async Task<ErrorOr<List<BaseCategoryResponse>>> Handle(GetBaseCategoriesQuery request, CancellationToken cancellationToken)
+    {
+        var listcategories = await _repository.GetAllAsync(cancellationToken);
+        if (listcategories is null)
+            return Error.NotFound(description: "BaseCategory is  Empty !");
 
+        var list =new List<BaseCategoryResponse>();
+        BaseCategoryResponse item = null;
+        foreach (var category in listcategories)
+        {
+             item = new BaseCategoryResponse(category.Id, category.Name, category.Description);
+
+            list.Add(item);
         }
+        return  list;
+
+    }
 }

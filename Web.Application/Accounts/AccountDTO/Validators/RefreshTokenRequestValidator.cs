@@ -1,6 +1,4 @@
-﻿using Web.Application.Accounts.AccountDTO;
-
-namespace Web.Application.Accounts.AccountDTO.Validators;
+﻿namespace Web.Application.Accounts.AccountDTO.Validators;
 
 public class RefreshTokenRequestValidator : AbstractValidator<RefreshTokenRequest>
 {

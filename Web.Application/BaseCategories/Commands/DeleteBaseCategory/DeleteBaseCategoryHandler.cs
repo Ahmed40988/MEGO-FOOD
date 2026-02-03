@@ -1,10 +1,6 @@
-using ErrorOr;
-using MediatR;
-using Web.Application.BaseCategories;
-
 namespace Web.Application.BaseCategories.Commands.DeleteBaseCategory;
 
-public class DeleteBaseCategoryHandler(IBaseCategoryRepository baseCategoryRepository,IUnitOfWork unitOfWork)
+public class DeleteBaseCategoryHandler(IBaseCategoryRepository baseCategoryRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<DeleteBaseCategoryCommand, ErrorOr<Deleted>>
 {
     private readonly IBaseCategoryRepository _baseCategoryRepository = baseCategoryRepository;

@@ -1,11 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Web.Application.Common.Interfaces;
 using Web.Infrastructure.BaseCategories.Persistence;
 using Web.Infrastructure.Common.Persistence.Data;
@@ -15,7 +9,6 @@ using Web.Infrastructure.Orders.Persistence;
 using Web.Infrastructure.Products.Persistence;
 using Web.Infrastructure.Restaurants.Persistence;
 using Web.Infrastructure.Service.Auth;
-using Web.Infrastructure.Service.Communication.Email;
 using Web.Infrastructure.Service.FuzzzySearch;
 using Web.Infrastructure.Services.Files;
 using Web.Infrastructure.Users.Persistence;
@@ -34,7 +27,7 @@ namespace Web.Infrastructure
 
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
-           // services.AddScoped<IAdminsRepository, AdminsRepository>();
+            // services.AddScoped<IAdminsRepository, AdminsRepository>();
             services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<AppDbContext>());
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IBaseCategoryRepository, BaseCategoryRepository>();

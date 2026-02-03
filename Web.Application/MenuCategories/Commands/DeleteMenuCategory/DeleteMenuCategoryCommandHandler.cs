@@ -1,8 +1,7 @@
-﻿using Web.Application.Common.Interfaces;
-namespace Web.Application.MenuCategories.Commands.DeleteMenuCategory
+﻿namespace Web.Application.MenuCategories.Commands.DeleteMenuCategory
 {
     public class DeleteMenuCategoryCommandHandler(IMenuCategoryRepository menuCategoryRepository
-        ,IUnitOfWork unitOfWork,IProductRepository productRepository) : IRequestHandler<DeleteMenuCategoryCommand, ErrorOr<Deleted>>
+        , IUnitOfWork unitOfWork, IProductRepository productRepository) : IRequestHandler<DeleteMenuCategoryCommand, ErrorOr<Deleted>>
     {
         private readonly IMenuCategoryRepository _menuCategoryRepository = menuCategoryRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -10,7 +9,7 @@ namespace Web.Application.MenuCategories.Commands.DeleteMenuCategory
 
         public async Task<ErrorOr<Deleted>> Handle(DeleteMenuCategoryCommand command, CancellationToken cancellationToken)
         {
-            var menucategory = await _menuCategoryRepository.GetByIdAsync(command.CategoryId,cancellationToken);
+            var menucategory = await _menuCategoryRepository.GetByIdAsync(command.CategoryId, cancellationToken);
 
             if (menucategory == null)
                 return Error.NotFound(description: "MenuCategory is not found !");

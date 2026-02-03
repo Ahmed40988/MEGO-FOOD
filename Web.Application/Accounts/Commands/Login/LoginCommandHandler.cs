@@ -1,11 +1,6 @@
-﻿using ErrorOr;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Web.Application.Common.Interfaces;
-using Web.Domain.RefreshTokens;
-using Web.Domain.Users;
+﻿using System.Security.Cryptography;
 using Web.Application.Accounts.AccountDTO;
-using System.Security.Cryptography;
+using Web.Domain.Users;
 using RefreshTokenEntity = Web.Domain.RefreshTokens.RefreshToken;
 
 

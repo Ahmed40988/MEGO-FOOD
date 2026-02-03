@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Web.Application.Products.Commands.CreateProduct
+﻿namespace Web.Application.Products.Commands.CreateProduct
 {
-    public class CreateProductCommandValidator:AbstractValidator<CreateProductCommand>
+    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
     {
         public CreateProductCommandValidator()
         {
@@ -19,7 +13,7 @@ namespace Web.Application.Products.Commands.CreateProduct
                 .MaximumLength(50);
 
             RuleFor(x => x.price)
-                .GreaterThan(0);       
+                .GreaterThan(0);
         }
 
     }

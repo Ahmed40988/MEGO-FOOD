@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Web.Application.Accounts.Commands.ResetPassword
+﻿namespace Web.Application.Accounts.Commands.ResetPassword
 {
-    public class ResetPasswordCommandValidator:AbstractValidator<ResetPasswordCommand>
+    public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
     {
         public ResetPasswordCommandValidator()
         {

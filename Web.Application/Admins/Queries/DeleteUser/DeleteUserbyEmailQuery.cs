@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Web.Application.Admins.Queries.DeleteUser
+﻿namespace Web.Application.Admins.Queries.DeleteUser
 {
-    public record DeleteUserbyEmailQuery(string Adminid,string Email):IRequest<ErrorOr<Deleted>>;
+    public record DeleteUserbyEmailQuery(string Adminid, string Email) : IRequest<ErrorOr<Deleted>>;
 }

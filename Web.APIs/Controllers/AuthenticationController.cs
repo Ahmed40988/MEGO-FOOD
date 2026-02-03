@@ -1,16 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Web.Application.Accounts.AccountDTO;
-using Web.Application.Accounts.Commands.CreateAccount;
-using Web.Application.Accounts.Commands.ResendConfirmationEmail;
+﻿
+using Web.Application.Accounts.Commands.CompleteProfile;
 using Web.Application.Accounts.Commands.ConfirmEmail;
+using Web.Application.Accounts.Commands.CreateAccount;
 using Web.Application.Accounts.Commands.ForgotPassword;
-using Web.Application.Accounts.Commands.VerifyForgotPasswordOtp;
-using Web.Application.Accounts.Commands.ResetPassword;
 using Web.Application.Accounts.Commands.Login;
 using Web.Application.Accounts.Commands.RefreshToken;
-using Web.Application.Accounts.Commands.CompleteProfile;
-using Microsoft.AspNetCore.Authorization;
+using Web.Application.Accounts.Commands.ResendConfirmationEmail;
+using Web.Application.Accounts.Commands.ResetPassword;
+using Web.Application.Accounts.Commands.VerifyForgotPasswordOtp;
 
 namespace Web.APIs.Controllers
 {
@@ -185,12 +182,8 @@ namespace Web.APIs.Controllers
             );
         }
 
-        /// <summary>
-        /// Refresh JWT token using refresh token.
-        /// </summary>
-        /// <remarks>
-        /// Returns a new JWT and refresh token.
-        /// </remarks>
+        /// <summary> Refresh JWT token using refresh token. </summary>
+        /// <remarks> Returns a new JWT and refresh token. </remarks>
         /// <response code="200">New tokens generated</response>
         /// <response code="400">Invalid token or refresh token</response>
         [HttpPost("refresh-token")]
@@ -211,36 +204,21 @@ namespace Web.APIs.Controllers
         }
 
         /// <summary>
-        /// Complete user profile information./// </summary>
+        /// Complete user profile information. </summary>
         /// <remarks>
-        /// This endpoint allows an authenticated user to complete their profile by
-        /// providing personal information, address details, and an optional profile image.
-        /// <br/><br/>
-        /// The request must be sent as <b>multipart/form-data</b> because it supports file upload.
-        /// </remarks>
-        /// <param name="Request">
-        /// Profile completion data including full name, phone number, date of birth,
-        /// address information, and optional profile image.
-        /// </param>
-        /// <response code="200">
-        /// Profile completed successfully.
-        /// </response>
-        /// <response code="400">
-        /// Invalid request data or validation error.
-        /// </response>
-        /// <response code="401">
-        /// Unauthorized. JWT token is missing or invalid.
-        /// </response>
-        /// <response code="404">
-        /// User not found.
-        /// </response>
+        /// The request must be sent With Token as need Userid from Token <br/><br/>
+        /// The request must be sent as <b>multipart/form-data</b> because it supports file upload. </remarks>
+        /// <response code="200">Profile completed successfully. </response>
+        /// <response code="400">Invalid request data or validation error. </response>
+        /// <response code="401"> Unauthorized. JWT token is missing or invalid. </response>
+        /// <response code="404"> User not found. </response>
 
         [Authorize]
         [HttpPost("Complete-Profile")]
         public async Task<IActionResult> CompleteProfile(
             [FromForm] CreateProfileRequest Request)
         {
-            var Userid=User.GetUserId();
+            var Userid = User.GetUserId();
             var commmand = new CompleteProfileCommand(Userid,
                 Request.FullName, Request.Phone, Request.DateOfBirth, Request.Adresss, Request.Image);
             var result = await _mediator.Send(commmand);

@@ -1,7 +1,4 @@
-﻿using ErrorOr;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Web.Domain.Users;
+﻿using Web.Domain.Users;
 
 namespace Web.Application.Accounts.Commands.ResetPassword
 {

@@ -1,4 +1,5 @@
-﻿using Web.Application.Common.Interfaces;
+﻿using System.Linq.Dynamic.Core;
+using Web.Application.Common.Interfaces;
 using Web.Domain.BaseCategories;
 using Web.Infrastructure.Common.Persistence.Data;
 
@@ -21,13 +22,21 @@ namespace Web.Infrastructure.BaseCategories.Persistence
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.BaseCategories
-                .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(b => b.Id == id&&!b.Deleted, cancellationToken);
+        }
+
+        public async Task<BaseCategory?> GetByNameAsync(
+            string name,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.BaseCategories
+                .FirstOrDefaultAsync(b => b.Name == name && !b.Deleted, cancellationToken);
         }
 
         public async Task<IReadOnlyList<BaseCategory>> GetAllAsync(
             CancellationToken cancellationToken = default)
         {
-            return await _dbContext.BaseCategories
+            return await _dbContext.BaseCategories.Where(b=>!b.Deleted)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }

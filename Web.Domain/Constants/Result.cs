@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace Web.Domain.Constants;
+﻿namespace Web.Domain.Constants;
 
 public class Result
 {

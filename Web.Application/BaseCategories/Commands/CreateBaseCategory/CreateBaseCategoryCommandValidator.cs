@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace Web.Application.BaseCategories.Commands.CreateBaseCategory;
 
 public class CreateBaseCategoryCommandValidator : AbstractValidator<CreateBaseCategoryCommand>

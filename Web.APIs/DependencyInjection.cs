@@ -1,12 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Web.Application.Accounts.AccountDTO;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Web.Application.Common.Interfaces;
-using Web.Domain.Users;
-using Web.Infrastructure;
-using Web.Infrastructure.Common.Persistence.Data;
-using Web.Infrastructure.Service.Auth;
 using Web.Infrastructure.Service.Communication.Email;
 
 namespace Web.APIs
@@ -98,7 +91,7 @@ namespace Web.APIs
         private static IServiceCollection AddEmailConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
-           
+
             return services;
         }
 
@@ -110,38 +103,38 @@ namespace Web.APIs
 
             return services;
         }
-        
-            private static IServiceCollection AddJwtAuthConfig(
-        this IServiceCollection services,
-        IConfiguration configuration)
+
+        private static IServiceCollection AddJwtAuthConfig(
+    this IServiceCollection services,
+    IConfiguration configuration)
+        {
+            services.AddAuthentication(options =>
             {
-                services.AddAuthentication(options =>
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
 
-                        ValidIssuer = configuration["JWT:Issuer"],
-                        ValidAudience = configuration["JWT:Audience"],
+                    ValidIssuer = configuration["JWT:Issuer"],
+                    ValidAudience = configuration["JWT:Audience"],
 
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(
-                                configuration["JWT:Key"]
-                                    ?? throw new InvalidOperationException("JWT Key is missing")
-                            ))
-                    };
-                });
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            configuration["JWT:Key"]
+                                ?? throw new InvalidOperationException("JWT Key is missing")
+                        ))
+                };
+            });
 
-                return services;
-            }
+            return services;
+        }
 
         private static IServiceCollection AddAuthorizationConfig(
     this IServiceCollection services)

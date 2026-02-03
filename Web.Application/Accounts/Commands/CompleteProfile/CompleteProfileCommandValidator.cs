@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Web.Application.Accounts.Commands.CompleteProfile
+﻿namespace Web.Application.Accounts.Commands.CompleteProfile
 {
-    public class CompleteProfileCommandValidator:AbstractValidator<CompleteProfileCommand>
+    public class CompleteProfileCommandValidator : AbstractValidator<CompleteProfileCommand>
     {
-        public CompleteProfileCommandValidator() {
+        public CompleteProfileCommandValidator()
+        {
 
             RuleFor(x => x.FullName)
             .NotEmpty().WithMessage("Full name is required.")
@@ -40,7 +35,7 @@ namespace Web.Application.Accounts.Commands.CompleteProfile
             var age = today.Year - dateOfBirth.Year;
             if (dateOfBirth > today.AddYears(-age)) age--;
             return age >= 13;
-        
+
         }
 
 

@@ -1,13 +1,6 @@
 ﻿using ErrorOr;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Web.Domain.Addresses;
-using Web.Domain.BaseModels;
-using Web.Domain.MenuCategories;
 using Web.Domain.RefreshTokens;
 using Web.Domain.Restaurants;
 
@@ -26,7 +19,7 @@ namespace Web.Domain.Users
         public DateOnly DateOfBirth { get; set; }
 
         private readonly List<RefreshToken> _refreshTokens = new();
-        public IReadOnlyCollection<RefreshToken> RefreshTokens=> _refreshTokens.AsReadOnly();
+        public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
 
         private readonly List<Address> _addresses = new();
         public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
@@ -60,9 +53,9 @@ namespace Web.Domain.Users
         }
         private AppUser() { }
 
-        public AppUser( string email)
+        public AppUser(string email)
         {
-            Email =email;   
+            Email = email;
             UserName = email;
         }
         public void UpdateProfile(
@@ -77,9 +70,9 @@ namespace Web.Domain.Users
             AddAddress(address);
         }
 
-        public ErrorOr<Success> AddAddress(Address  address)
+        public ErrorOr<Success> AddAddress(Address address)
         {
-            if(_addresses.Contains(address))
+            if (_addresses.Contains(address))
                 return addressErrors.Duplicatedaddress;
 
             if (address is null)
@@ -88,9 +81,9 @@ namespace Web.Domain.Users
             _addresses.Add(address);
             return Result.Success;
         }
-        public ErrorOr<Success> AddrefreshTokens(RefreshToken  refreshToken)
+        public ErrorOr<Success> AddrefreshTokens(RefreshToken refreshToken)
         {
-            if(_refreshTokens.Contains(refreshToken))
+            if (_refreshTokens.Contains(refreshToken))
                 return RefreshTokensErrors.DuplicatedRefreshToken;
 
             if (refreshToken is null)
@@ -129,7 +122,7 @@ namespace Web.Domain.Users
 
         public void Delete(string updatedById)
         {
-          SoftDelete(updatedById);
+            SoftDelete(updatedById);
             _restaurant.Clear();
             _refreshTokens.Clear();
             _addresses.Clear();

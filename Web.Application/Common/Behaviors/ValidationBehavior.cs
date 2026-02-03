@@ -1,8 +1,4 @@
-﻿using ErrorOr;
-using FluentValidation;
-using MediatR;
-
-namespace Web.Application.Common.Behaviors
+﻿namespace Web.Application.Common.Behaviors
 {
     public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest> validator)
      : IPipelineBehavior<TRequest, TResponse>

@@ -1,6 +1,4 @@
-﻿using Web.Application.Adresses.AddressDTO;
-
-namespace Web.Application.Adresses.AddressDTO.validators
+﻿namespace Web.Application.Adresses.AddressDTO.validators
 {
     public class AdressRequestDtoValidators : AbstractValidator<AddressRequestDto>
     {

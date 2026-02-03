@@ -1,7 +1,4 @@
-﻿using ErrorOr;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Web.Domain.Users;
 
 namespace Web.Application.Accounts.Commands.ConfirmEmail

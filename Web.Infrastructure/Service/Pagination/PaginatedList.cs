@@ -1,11 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Web.Infrastructure.Service.Pagination
+﻿namespace Web.Infrastructure.Service.Pagination
 {
     public class PaginatedList<T>(List<T> items, int pageNumber, int count, int pageSize)
     {

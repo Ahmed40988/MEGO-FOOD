@@ -1,8 +1,5 @@
-﻿
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Web.Application.RestaurantCategories.Contracts;
 using Web.Application.Restaurants.Commands.CreateRestaurants;
-using Web.Application.RestaurantCategories.Contracts;
 
 namespace Web.APIs.Controllers
 {
@@ -20,7 +17,7 @@ namespace Web.APIs.Controllers
                 request.description,
                 request.userId);
 
-           var  result = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
             return result.Match(
          category => Ok(category),

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ErrorOr; // افتراض وجود مكتبة ErrorOr
+﻿using ErrorOr; // افتراض وجود مكتبة ErrorOr
 using Web.Domain.Addresses;
 using Web.Domain.BaseModels;
 using Web.Domain.OrderItems;
@@ -18,7 +15,7 @@ namespace Web.Domain.Orders
         public int AddressId { get; private set; }
         public Address Address { get; private set; } = default!;
 
-        public OrderStatus Status { get; private set; } 
+        public OrderStatus Status { get; private set; }
         public decimal Subtotal { get; private set; }
         public decimal Discount { get; private set; }
         public decimal Tax { get; private set; }
@@ -35,7 +32,7 @@ namespace Web.Domain.Orders
             Id = id ?? Guid.NewGuid();
             UserId = userId;
             AddressId = addressId;
-            Status=OrderStatus.Pending;
+            Status = OrderStatus.Pending;
 
             if (items != null)
                 _items.AddRange(items);

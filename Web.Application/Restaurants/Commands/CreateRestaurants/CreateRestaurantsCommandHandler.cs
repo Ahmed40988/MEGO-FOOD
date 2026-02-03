@@ -3,8 +3,8 @@ namespace Web.Application.Restaurants.Commands.CreateRestaurants
 {
     public class CreateRestaurantsCommandHandler
         (IRestaurantRepository restaurantCategoryRepository,
-        IUnitOfWork unitOfWork,IUserRepository userRepository)
-        : IRequestHandler<CreateRestaurantsCommand,ErrorOr<Restaurant>>
+        IUnitOfWork unitOfWork, IUserRepository userRepository)
+        : IRequestHandler<CreateRestaurantsCommand, ErrorOr<Restaurant>>
     {
         private readonly IRestaurantRepository _restaurantCategoryRepository = restaurantCategoryRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -29,7 +29,7 @@ namespace Web.Application.Restaurants.Commands.CreateRestaurants
 
 
 
-            await _restaurantCategoryRepository.AddAsync (restaurant);
+            await _restaurantCategoryRepository.AddAsync(restaurant);
             await _unitOfWork.CommitChangesAsync();
             return restaurant;
         }

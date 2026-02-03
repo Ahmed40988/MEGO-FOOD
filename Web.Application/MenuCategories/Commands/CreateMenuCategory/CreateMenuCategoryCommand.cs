@@ -1,12 +1,4 @@
-﻿using ErrorOr;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Web.Domain.MenuCategories;
-using Web.Domain.Restaurants;
+﻿using Web.Domain.MenuCategories;
 
 namespace Web.Application.MenuCategories.Commands.CreateMenuCategory
 {

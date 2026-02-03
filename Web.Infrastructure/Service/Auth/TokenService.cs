@@ -1,12 +1,8 @@
-﻿using ErrorOr;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq.Dynamic.Core.Tokenizer;
 using System.Security.Claims;
 using Web.Application.Common.Interfaces;
-using Web.Domain.Users;
 
 namespace Web.Infrastructure.Service.Auth
 {
@@ -15,12 +11,12 @@ namespace Web.Infrastructure.Service.Auth
         private readonly IConfiguration _configuration;
         private readonly ILogger<TokenService> _logger;
 
-        public TokenService(IConfiguration configuration,ILogger<TokenService> logger)
+        public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
         {
             _configuration = configuration;
             _logger = logger;
         }
-        public async Task<(string Token,int expiresIn)> GenerateTokenAsync(AppUser user, UserManager<AppUser> userManager)
+        public async Task<(string Token, int expiresIn)> GenerateTokenAsync(AppUser user, UserManager<AppUser> userManager)
         {
 
             _logger.LogInformation(

@@ -1,5 +1,4 @@
-﻿using ErrorOr;
-using Web.Domain.BaseModels;
+﻿using Web.Domain.BaseModels;
 using Web.Domain.MenuCategories;
 
 public class Product : BaseModel
@@ -16,7 +15,7 @@ public class Product : BaseModel
     public Guid MenuCategoryId { get; private set; }
     public MenuCategory MenuCategory { get; private set; } = default!;
 
-   
+
     private Product() { }
 
     public Product(

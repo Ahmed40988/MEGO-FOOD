@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Web.Application.Adresses.AddressDTO;
-using Web.Domain.Addresses;
+﻿using Web.Domain.Addresses;
 using Web.Domain.Users;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Web.Application.Accounts.Commands.CompleteProfile
 {
-    public class CompleteProfileCommandHandler(IFileHelperService fileHelperService,UserManager<AppUser> userManager,IUnitOfWork unitOfWork) : IRequestHandler<CompleteProfileCommand, ErrorOr<Success>>
+    public class CompleteProfileCommandHandler(IFileHelperService fileHelperService, UserManager<AppUser> userManager, IUnitOfWork unitOfWork) : IRequestHandler<CompleteProfileCommand, ErrorOr<Success>>
     {
         private readonly IFileHelperService _fileHelperService = fileHelperService;
         private readonly UserManager<AppUser> _userManager = userManager;

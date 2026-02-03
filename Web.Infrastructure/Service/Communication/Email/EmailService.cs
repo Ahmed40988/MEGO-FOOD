@@ -1,6 +1,5 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,7 +8,7 @@ using Web.Application.Common.Interfaces;
 
 namespace Web.Infrastructure.Service.Communication.Email;
 
-public class EmailService(IOptions<MailSettings> mailSettings, ILogger<EmailService> logger) : IEmailSender,IEmailService
+public class EmailService(IOptions<MailSettings> mailSettings, ILogger<EmailService> logger) : IEmailSender, IEmailService
 {
     private readonly MailSettings _mailSettings = mailSettings.Value;
     private readonly ILogger<EmailService> _logger = logger;

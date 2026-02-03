@@ -1,22 +1,14 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Web.Application.Accounts.AccountDTO;
-using Web.Application.Common.Interfaces;
 using Web.Domain.Users;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Web.Application.Accounts.Commands.CreateAccount
 {
     public class CreateAccountCommandHandler(IUserRepository userRepository
         , IUnitOfWork unitOfWork
-        ,UserManager<AppUser> userManager
+        , UserManager<AppUser> userManager
         , ITokenService tokenService
-        ,IMemoryCache memoryCache
-        ,IEmailService emailService) : IRequestHandler<CreateAccountCommand, ErrorOr<Success>>
+        , IMemoryCache memoryCache
+        , IEmailService emailService) : IRequestHandler<CreateAccountCommand, ErrorOr<Success>>
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -27,8 +19,8 @@ namespace Web.Application.Accounts.Commands.CreateAccount
 
         public async Task<ErrorOr<Success>> Handle(CreateAccountCommand Command, CancellationToken cancellationToken)
         {
-            var IsuserDeleted=await _userRepository.ExistSameEmailandDeletedAsync(Command.Email,cancellationToken);
-                //Restore user if register by email deleted by admin
+            var IsuserDeleted = await _userRepository.ExistSameEmailandDeletedAsync(Command.Email, cancellationToken);
+            //Restore user if register by email deleted by admin
             if (IsuserDeleted)
             {
 
@@ -51,9 +43,9 @@ namespace Web.Application.Accounts.Commands.CreateAccount
                             description: e.Description))
                         .First();
                 }
-                    var otp = new Random().Next(100000, 999999).ToString();
-                    _memoryCache.Set($"EmailOTP_{Command.Email}", otp, TimeSpan.FromMinutes(5));
-                    await _emailService.SendConfirmationEmail(Deleteduser, otp);
+                var otp = new Random().Next(100000, 999999).ToString();
+                _memoryCache.Set($"EmailOTP_{Command.Email}", otp, TimeSpan.FromMinutes(5));
+                await _emailService.SendConfirmationEmail(Deleteduser, otp);
                 return Result.Success;
 
             }
@@ -70,7 +62,7 @@ namespace Web.Application.Accounts.Commands.CreateAccount
             }
 
             var user = new AppUser(Command.Email);
-            var result=await _userManager.CreateAsync(user,Command.Passsword);
+            var result = await _userManager.CreateAsync(user, Command.Passsword);
 
             if (result.Succeeded)
             {

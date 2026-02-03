@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Web.Application.Common.Interfaces;
-using Web.Domain.MenuCategories;
-
-namespace Web.Application.Products.Queries.GetProduct
+﻿namespace Web.Application.Products.Queries.GetProduct
 {
-    public class GetProductQueryHandler(IMenuCategoryRepository menuCategoryRepository,IProductRepository productRepository) : IRequestHandler<GetProductQuery, ErrorOr<Product>>
+    public class GetProductQueryHandler(IMenuCategoryRepository menuCategoryRepository, IProductRepository productRepository) : IRequestHandler<GetProductQuery, ErrorOr<Product>>
     {
         private readonly IMenuCategoryRepository _menuCategoryRepository = menuCategoryRepository;
         private readonly IProductRepository _productRepository = productRepository;

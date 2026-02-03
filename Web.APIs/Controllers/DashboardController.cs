@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Web.Application.Admins.Queries.DeleteUser;
+﻿using Web.Application.Admins.Queries.DeleteUser;
 
 namespace Web.APIs.Controllers
 {
@@ -11,11 +8,17 @@ namespace Web.APIs.Controllers
     {
         private readonly ISender _Mediator = sender;
 
-        [HttpPost("DeleteUserByEmail")]
+
+        /// <summary> Delete User By Email . </summary>
+        /// <remarks> For Admins only </remarks>
+        /// <response code="200">USer is successful Deleted</response>
+        /// <response code="404">userEmail is not found</response>
+
+        [HttpDelete("DeleteUserByEmail")]
         public async Task<IActionResult> DeleteUserbyEmail(string email)
         {
-            var adminid=User.GetUserId();
-            var result=await _Mediator.Send(new DeleteUserbyEmailQuery(adminid, email));
+            var adminid = User.GetUserId();
+            var result = await _Mediator.Send(new DeleteUserbyEmailQuery(adminid, email));
             return result.Match(
                  _ => Ok(),
                  errors => ToProblem(errors)

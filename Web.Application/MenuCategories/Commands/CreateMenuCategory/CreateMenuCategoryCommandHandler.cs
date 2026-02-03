@@ -1,7 +1,4 @@
-﻿
-using Web.Application.Common.Interfaces;
-using Web.Application.Restaurants.Commands.CreateRestaurants;
-using Web.Domain.MenuCategories;
+﻿using Web.Domain.MenuCategories;
 
 namespace Web.Application.MenuCategories.Commands.CreateMenuCategory
 {
@@ -15,15 +12,15 @@ namespace Web.Application.MenuCategories.Commands.CreateMenuCategory
 
         public async Task<ErrorOr<MenuCategory>> Handle(CreateMenuCategoryCommand command, CancellationToken cancellationToken)
         {
-            var restaurantcategory=await _restaurantCategoryRepository.GetByIdAsync(command.restaurantcategoryid);
+            var restaurantcategory = await _restaurantCategoryRepository.GetByIdAsync(command.restaurantcategoryid);
 
-            if(restaurantcategory == null)
-              return Error.NotFound(description: "RestaurantCategory For this Product is not found");
+            if (restaurantcategory == null)
+                return Error.NotFound(description: "RestaurantCategory For this Product is not found");
 
 
             var category = new MenuCategory(
                 command.name,
-                command.description, 
+                command.description,
                 command.restaurantcategoryid);
 
             var addmenucategoryResult = restaurantcategory.AddMenuCategory(category);

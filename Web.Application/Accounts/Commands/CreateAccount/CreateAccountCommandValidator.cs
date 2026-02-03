@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Web.Application.Accounts.AccountDTO;
-
-namespace Web.Application.Accounts.Commands.CreateAccount
+﻿namespace Web.Application.Accounts.Commands.CreateAccount
 {
     public class CreateAccountCommandValidator : AbstractValidator<CreateAccountCommand>
     {
-            public CreateAccountCommandValidator()
+        public CreateAccountCommandValidator()
         {
             RuleFor(x => x.Email)
               .NotEmpty()
@@ -26,6 +19,6 @@ namespace Web.Application.Accounts.Commands.CreateAccount
 
 
         }
-        }
     }
+}
 

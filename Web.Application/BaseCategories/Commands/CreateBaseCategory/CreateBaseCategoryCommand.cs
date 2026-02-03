@@ -1,6 +1,3 @@
-using ErrorOr;
-using MediatR;
-
 namespace Web.Application.BaseCategories.Commands.CreateBaseCategory;
 
 public record CreateBaseCategoryCommand(
