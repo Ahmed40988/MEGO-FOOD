@@ -52,6 +52,13 @@ namespace Web.Domain.BaseCategories
             _restaurants.Remove(restaurant);
             return Result.Success;
         }
+        public void Update(string adminId, string name, string description)
+        {
+            SetName(name);
+            SetDescription(description);
+            Touch(adminId);
+        }
+
 
         public void Rename(string newName, string updatedById)
         {

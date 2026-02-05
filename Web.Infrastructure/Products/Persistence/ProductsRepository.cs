@@ -29,6 +29,12 @@ namespace Web.Infrastructure.Products.Persistence
                 .AnyAsync(p => p.Id == productId, cancellationToken);
         }
 
+        public async Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Products
+                .AnyAsync(p => p.Name == name, cancellationToken);
+        }
+
         public async Task<IReadOnlyList<Product>> GetByCategoryAsync(
             Guid categoryId,
             CancellationToken cancellationToken = default)
@@ -86,5 +92,7 @@ namespace Web.Infrastructure.Products.Persistence
             _dbContext.Update(product);
             return Task.CompletedTask;
         }
+
+
     }
 }

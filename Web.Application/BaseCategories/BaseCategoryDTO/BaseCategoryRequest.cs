@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Web.Application.BaseCategories.BaseCategoryDTO
 {
-    public record CreateBaseCategoryRequest(
+    public record BaseCategoryRequest(
         string Name,
     string Description
 

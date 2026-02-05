@@ -1,34 +1,33 @@
-﻿namespace Web.Application.Products.Commands.CreateProduct
+﻿namespace Web.Application.Products.Commands.CreateProduct;
+
+public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, ErrorOr<Guid>>
 {
-    public class CreateProductCommandHandler(IMenuCategoryRepository menuCategoryRepository, IUnitOfWork unitOfWork) : IRequestHandler<CreateProductCommand, ErrorOr<Product>>
+    private readonly IProductRepository _repository;
+
+    public CreateProductCommandHandler(IProductRepository repository)
     {
-        private readonly IMenuCategoryRepository _menuCategoryRepository = menuCategoryRepository;
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        _repository = repository;
+    }
 
-        public async Task<ErrorOr<Product>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Guid>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    {
+        // Check if a product with the same name already exists
+        if (await _repository.ExistsByNameAsync(request.Name, cancellationToken))
         {
-            var menucategory = await _menuCategoryRepository.GetByIdAsync(command.menuCategoryId);
-            if (menucategory == null)
-                return Error.NotFound(description: "Menucategory For this Product is not found");
-
-            var product = new Product
-                (
-                command.name
-               , command.description
-               , command.imageUrl
-               , command.price
-               , command.menuCategoryId
-               );
-            var addProductResult = menucategory.AddProduct(product);
-
-            if (addProductResult.IsError)
-                return addProductResult.Errors;
-
-
-            await _menuCategoryRepository.UpdateAsync(menucategory);
-            await _unitOfWork.CommitChangesAsync();
-
-            return product;
+            return Error.Conflict("Product.DuplicateName", "A product with the same name already exists.");
         }
+
+        // Create the product using the constructor
+        var product = new Product(
+            request.Name,
+            request.Description,
+            request.ImageUrl,
+            request.Price,
+            request.MenuCategoryId
+        );
+
+        await _repository.AddAsync(product, cancellationToken);
+
+        return product.Id;
     }
 }

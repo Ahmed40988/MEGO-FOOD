@@ -11,7 +11,7 @@ namespace Web.Domain.Restaurants
         public Guid Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public string Description { get; private set; } = string.Empty;
-        public string userid { get; private set; } = string.Empty;
+        public string AppUserId { get; private set; } = string.Empty;
         public AppUser AppUser { get; private set; } = default!;
         public Guid BaseCatgoryId { get; private set; }
         public BaseCategory BaseCatgory { get; private set; } = default!;
@@ -24,14 +24,17 @@ namespace Web.Domain.Restaurants
         public Restaurant(
           string name,
           string description,
-          string userId)
+          string userId,
+            Guid baseCatgoryId
+            )
         {
             Id = Guid.NewGuid();
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Description = description ?? throw new ArgumentNullException(nameof(description));
-            userid = userId ?? throw new ArgumentNullException(nameof(userId));
+            AppUserId = userId ?? throw new ArgumentNullException(nameof(userId));
+            BaseCatgoryId = baseCatgoryId ;
         }
-
+        
 
         public ErrorOr<Success> AddMenuCategory(MenuCategory menuCategory)
         {
@@ -59,7 +62,13 @@ namespace Web.Domain.Restaurants
 
             return Result.Success;
         }
-
+        public void Update(string adminId, string name, string description,Guid baseCatgoryId)
+        {
+            SetName(name);
+            SetDescription(description);
+            SetBaseCategoryId(baseCatgoryId);
+            Touch(adminId);
+        }
         public void Rename(string newName, string UpdatedByid)
         {
             Name = newName;
@@ -74,7 +83,7 @@ namespace Web.Domain.Restaurants
 
         public void ChangeOwner(string newUserId, string updatedById)
         {
-            userid = newUserId;
+            AppUserId = newUserId;
             Touch(updatedById);
         }
 
@@ -84,7 +93,7 @@ namespace Web.Domain.Restaurants
                 return RestaurantsErrors.CannotAssignUserforthisIdAllows;
 
             AppUser = user;
-            userid = user.Id;
+            AppUserId = user.Id;
             Touch(updatedById);
             return Result.Success;
         }
@@ -103,7 +112,22 @@ namespace Web.Domain.Restaurants
         }
 
 
+        private void SetName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name is required.", nameof(name));
 
+            Name = name.Trim();
+        }
+
+        private void SetDescription(string description)
+        {
+            Description = description?.Trim() ?? string.Empty;
+        }
+        private void SetBaseCategoryId(Guid baseCategoryId)
+        {
+            BaseCatgoryId = baseCategoryId;
+        }
 
 
     }

@@ -1,8 +1,11 @@
 ﻿
+using Web.Application.Restaurants.Contracts;
+
 namespace Web.Application.Restaurants.Commands.CreateRestaurants
 {
     public record CreateRestaurantsCommand(
-          string name,
-          string description,
-          string userId) : IRequest<ErrorOr<Restaurant>>;
+          string Name,
+          string Description,
+          string UserId,
+          Guid BaseCatgoryId) : IRequest<ErrorOr<RestaurantResponce>>;
 }

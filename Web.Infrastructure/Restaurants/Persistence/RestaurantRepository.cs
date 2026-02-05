@@ -27,7 +27,12 @@ namespace Web.Infrastructure.Restaurants.Persistence
 
         public async Task<Restaurant?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Restaurants.FirstOrDefaultAsync(c => c.Id == id);
+            return await _dbContext.Restaurants.FirstOrDefaultAsync(c => c.Id == id&&!c.Deleted);
+        }
+
+        public async Task<Restaurant?> GetByNameAsync(string Name, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Restaurants.FirstOrDefaultAsync(c => c.Name==Name);
         }
 
         public async Task<IReadOnlyList<Restaurant>> ListRestaurants(CancellationToken cancellationToken = default)

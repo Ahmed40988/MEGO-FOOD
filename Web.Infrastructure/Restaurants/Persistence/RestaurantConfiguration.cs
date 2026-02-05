@@ -17,12 +17,12 @@ public class RestaurantConfiguration
         builder.Property(r => r.Description)
                .HasMaxLength(500);
 
-        builder.Property(r => r.userid)
+        builder.Property(r => r.AppUserId)
                .IsRequired();
 
         builder.HasOne(r => r.AppUser)
                .WithMany()
-               .HasForeignKey(r => r.userid)
+               .HasForeignKey(r => r.AppUserId)
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(r => r.MenuCategories)

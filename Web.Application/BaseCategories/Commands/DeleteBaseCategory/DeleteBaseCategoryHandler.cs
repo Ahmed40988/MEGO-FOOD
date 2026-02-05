@@ -12,7 +12,7 @@ public class DeleteBaseCategoryHandler(IBaseCategoryRepository baseCategoryRepos
         if (entity is null)
             return Error.NotFound("BaseCategory.NotFound", "BaseCategory not found");
 
-        entity.Delete(command.UserId);//TODO add admin id
+        entity.Delete(command.AdminId);
         await _baseCategoryRepository.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.CommitChangesAsync();
         return Result.Deleted;

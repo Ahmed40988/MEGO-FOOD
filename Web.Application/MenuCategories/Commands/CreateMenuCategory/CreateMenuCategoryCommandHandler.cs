@@ -7,12 +7,12 @@ namespace Web.Application.MenuCategories.Commands.CreateMenuCategory
       IUnitOfWork unitOfWork)
       : IRequestHandler<CreateMenuCategoryCommand, ErrorOr<MenuCategory>>
     {
-        private readonly IRestaurantRepository _restaurantCategoryRepository = restaurantCategoryRepository;
+        private readonly IRestaurantRepository _restaurantRepository = restaurantCategoryRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<ErrorOr<MenuCategory>> Handle(CreateMenuCategoryCommand command, CancellationToken cancellationToken)
         {
-            var restaurantcategory = await _restaurantCategoryRepository.GetByIdAsync(command.restaurantcategoryid);
+            var restaurantcategory = await _restaurantRepository.GetByIdAsync(command.restaurantcategoryid);
 
             if (restaurantcategory == null)
                 return Error.NotFound(description: "RestaurantCategory For this Product is not found");
@@ -29,7 +29,7 @@ namespace Web.Application.MenuCategories.Commands.CreateMenuCategory
                 return addmenucategoryResult.Errors;
 
 
-            await _restaurantCategoryRepository.UpdateAsync(restaurantcategory);
+            await _restaurantRepository.UpdateAsync(restaurantcategory);
             await _unitOfWork.CommitChangesAsync();
             throw new NotImplementedException();
         }

@@ -4,13 +4,13 @@ namespace Web.Application.MenuCategories.Queries.GetMenuCategory
 {
     public class GetMenuCategoryQueryHandler(IRestaurantRepository restaurantCategoryRepository, IMenuCategoryRepository menuCategoryRepository) : IRequestHandler<GetMenuCategoryQuery, ErrorOr<MenuCategory>>
     {
-        private readonly IRestaurantRepository _restaurantCategoryRepository = restaurantCategoryRepository;
+        private readonly IRestaurantRepository _restaurantRepository = restaurantCategoryRepository;
         private readonly IMenuCategoryRepository _menuCategoryRepository = menuCategoryRepository;
 
         public async Task<ErrorOr<MenuCategory>> Handle(GetMenuCategoryQuery comand, CancellationToken cancellationToken)
         {
 
-            if (!await _restaurantCategoryRepository.ExistsAsync(comand.RestaurantCategoryId, cancellationToken))
+            if (!await _restaurantRepository.ExistsAsync(comand.RestaurantCategoryId, cancellationToken))
             {
                 return Error.NotFound("Restaurant Category  not found");
             }

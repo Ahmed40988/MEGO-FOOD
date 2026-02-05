@@ -99,7 +99,7 @@ namespace Web.Domain.Users
                 return RestaurantsErrors.RestaurantisNull;
 
             if (_restaurant.Any(m => m.Name == restaurant.Name))
-                return RestaurantsErrors.DuplicatedMenuCategory;
+                return RestaurantsErrors.DuplicatedRestaurant;
 
             _restaurant.Add(restaurant);
             return Result.Success;
@@ -107,13 +107,13 @@ namespace Web.Domain.Users
         public ErrorOr<Success> DeleteRestaurant(Guid restaurantid)
         {
             if (restaurantid == Guid.Empty)
-                return RestaurantsErrors.MenuCategoryisNull;
+                return RestaurantsErrors.RestaurantIdisNull;
 
             var restaurant = _restaurant
                 .FirstOrDefault(m => m.Id == restaurantid);
 
             if (restaurant is null)
-                return RestaurantsErrors.MenuCategoryNotFound;
+                return RestaurantsErrors.RestaurantNotFound;
 
             _restaurant.Remove(restaurant);
 

@@ -2,6 +2,7 @@
 using Web.Application.BaseCategories.BaseCategoryDTO;
 using Web.Application.BaseCategories.Commands.CreateBaseCategory;
 using Web.Application.BaseCategories.Commands.DeleteBaseCategory;
+using Web.Application.BaseCategories.Commands.UpdateBaseCategory;
 using Web.Application.BaseCategories.Queries.GetBaseCategories;
 using Web.Application.BaseCategories.Queries.GetBaseCategoryById;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -23,11 +24,11 @@ namespace Web.APIs.Controllers
         /// <response code="401"> Unauthorized. JWT token is missing or invalid. </response>
         /// <response code="409">Base Category  already exists with the same name</response>
         [HttpPost("Create_BaseCategory")]
-        public async Task<IActionResult> CreateBaseCategory(CreateBaseCategoryRequest request)
+        public async Task<IActionResult> CreateBaseCategory(BaseCategoryRequest request)
         {
-            var userid=User.GetUserId();
-            var command = new CreateBaseCategoryCommand(request.Name, request.Description,userid);
-          var result=  await _mediator.Send(command);
+            var userid = User.GetUserId();
+            var command = new CreateBaseCategoryCommand(request.Name, request.Description, userid);
+            var result = await _mediator.Send(command);
             return result.Match(
              Id => Ok(Id),
              errors => ToProblem(errors)
@@ -45,8 +46,8 @@ namespace Web.APIs.Controllers
         }
 
 
-        [HttpGet("Get_BaseCategoryBy_ID")]
-        public async Task<IActionResult> GetBaseCategoryByID(Guid Id)
+        [HttpGet("Get_BaseCategoryBy_ID/{Id}")]
+        public async Task<IActionResult> GetBaseCategoryByID([FromRoute] Guid Id)
         {
             var Query = new GetBaseCategoryByIdQuery(Id);
             var result = await _mediator.Send(Query);
@@ -59,18 +60,18 @@ namespace Web.APIs.Controllers
 
 
 
-            /// <summary>
-            /// Delete Base Category
-            /// </summary>
-            /// <response code="200">Deleted is  successfully</response>
-            /// <response code="400">Validation error</response>
-            /// <response code="401"> Unauthorized. JWT token is missing or invalid. </response>
-            /// <response code="404"> BaseCategory not found. </response>
-            [HttpDelete("Delete_BaseCategory")]
-        public async Task<IActionResult>DeleteBaseCategory(Guid Id)
+        /// <summary>
+        /// Delete Base Category
+        /// </summary>
+        /// <response code="200">Deleted is  successfully</response>
+        /// <response code="400">Validation error</response>
+        /// <response code="401"> Unauthorized. JWT token is missing or invalid. </response>
+        /// <response code="404"> BaseCategory not found. </response>
+        [HttpDelete("Delete_BaseCategory/{Id}")]
+        public async Task<IActionResult> DeleteBaseCategory([FromRoute]Guid Id)
         {
-            var userid=User.GetUserId();
-            var command=new DeleteBaseCategoryCommand(Id,userid);
+            var AdminId = User.GetUserId();
+            var command = new DeleteBaseCategoryCommand(Id, AdminId);
             var result = await _mediator.Send(command);
             return result.Match(
              _ => Ok(),
@@ -79,7 +80,25 @@ namespace Web.APIs.Controllers
         }
 
 
+        /// <summary>
+        /// Updated Base Category
+        /// </summary>
+        /// <response code="200">Updated is  successfully</response>
+        /// <response code="400">Validation error</response>
+        /// <response code="401"> Unauthorized. JWT token is missing or invalid. </response>
+        /// <response code="409">Base Category  already exists with the same name</response>
 
-
+        [HttpPut("Update_BaseCategory/{Id}")]
+        public async Task<IActionResult> UpdateBaseCategory([FromRoute]Guid Id,[FromBody]BaseCategoryRequest request)
+        {
+            var adminId = User.GetUserId();
+            var command = new UpdateBaseCategoryCommand(Id, request.Name, request.Description, adminId);
+            var result = await _mediator.Send(command);
+            return result.Match(
+       Id => Ok(Id),
+       errors => ToProblem(errors)
+            );
+        }
     }
+
 }

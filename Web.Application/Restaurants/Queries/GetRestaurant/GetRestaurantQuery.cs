@@ -1,4 +1,6 @@
-﻿namespace Web.Application.Restaurants.Queries.GetRestaurant
+﻿using Web.Application.Restaurants.Contracts;
+
+namespace Web.Application.Restaurants.Queries.GetRestaurant
 {
-    public record GetRestaurantQuery(Guid CategoryId) : IRequest<ErrorOr<Restaurant>>;
+    public record GetRestaurantQuery(Guid Id) : IRequest<ErrorOr<RestaurantResponce>>;
 }

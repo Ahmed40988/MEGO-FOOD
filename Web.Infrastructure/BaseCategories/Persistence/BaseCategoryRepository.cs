@@ -48,6 +48,11 @@ namespace Web.Infrastructure.BaseCategories.Persistence
             _dbContext.Update(entity);
             return Task.CompletedTask;
         }
+
+        public async Task<bool> ExistsAsync(Guid CategorytId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.BaseCategories.AsNoTracking().AnyAsync(c => c.Id == CategorytId&&!c.Deleted);
+        }
     }
 }
 

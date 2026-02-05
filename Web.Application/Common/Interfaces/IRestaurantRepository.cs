@@ -3,6 +3,7 @@
     public interface IRestaurantRepository
     {
         Task<Restaurant?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Restaurant?> GetByNameAsync(string Name, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Restaurant>> SearchAsync(string keyword, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Restaurant>> ListRestaurants(CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(Guid CategorytId, CancellationToken cancellationToken = default);

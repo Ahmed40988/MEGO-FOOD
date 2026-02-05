@@ -1,15 +1,19 @@
-﻿namespace Web.Application.Restaurants.Queries.GetRestaurant
-{
-    public class GetRestaurantQueryHandler(IRestaurantRepository restaurantCategoryRepository) : IRequestHandler<GetRestaurantQuery, ErrorOr<Restaurant>>
-    {
-        private readonly IRestaurantRepository _restaurantCategoryRepository = restaurantCategoryRepository;
+﻿using Web.Application.Restaurants.Contracts;
 
-        public async Task<ErrorOr<Restaurant>> Handle(GetRestaurantQuery command, CancellationToken cancellationToken)
+namespace Web.Application.Restaurants.Queries.GetRestaurant
+{
+    public class GetRestaurantQueryHandler(IRestaurantRepository restaurantCategoryRepository) : IRequestHandler<GetRestaurantQuery, ErrorOr<RestaurantResponce>>
+    {
+        private readonly IRestaurantRepository _restaurantRepository = restaurantCategoryRepository;
+
+        public async Task<ErrorOr<RestaurantResponce>> Handle(GetRestaurantQuery command, CancellationToken cancellationToken)
         {
-            var restaurant = await _restaurantCategoryRepository.GetByIdAsync(command.CategoryId);
+            var restaurant = await _restaurantRepository.GetByIdAsync(command.Id);
+
+            var response=new RestaurantResponce(restaurant.Id, restaurant.Name,restaurant.Description,restaurant.BaseCatgoryId);
             return restaurant is null ?
-                Error.NotFound(description: "Restaurant by this Id is not found !")
-                : restaurant;
+                Error.NotFound("Restaurant.NotFound", "Restaurant by this Id is not found !")
+                : response;
 
         }
     }

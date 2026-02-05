@@ -55,44 +55,6 @@ namespace Web.Infrastructure.Service.Auth
             return (token: new JwtSecurityTokenHandler().WriteToken(JwtObject), expiresIn: expiresIn * 60);
         }
 
-
-        //public string? ValidateToken(string token)
-        //{
-        //    _logger.LogInformation(
-        //        "SIGN KEY (GEN): {Key}",
-        //        Convert.ToBase64String(
-        //            Encoding.UTF8.GetBytes(_configuration["JWT:Key"]!.Trim())
-        //        )
-        //    );
-
-
-        //    var TokenHandler = new JwtSecurityTokenHandler();
-        //    var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]!.Trim()));
-
-        //    try
-        //    {
-        //        TokenHandler.ValidateToken(token, new TokenValidationParameters
-        //        {
-        //            IssuerSigningKey = symmetricSecurityKey,
-        //            ValidateIssuerSigningKey = true,
-        //            ValidateIssuer = false,
-        //            ValidateAudience = false,
-        //        }, out SecurityToken validatedToken
-        //        );
-        //        var jwtToken = (JwtSecurityToken)validatedToken;
-        //        return jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "JWT validation failed");
-
-        //        return null;
-        //    }
-
-        //}
-
-
         public string? ValidateAccessToken(string token)
         {
             return Validate(token, validateLifetime: true);

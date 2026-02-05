@@ -2,34 +2,39 @@
 using Web.Domain.Users;
 namespace Web.Application.Restaurants.Commands.DeleteRestaurants
 {
-    public class DeleteRestaurantCommandHandler(IRestaurantRepository restaurantCategoryRepository,
+    public class DeleteRestaurantCommandHandler(IRestaurantRepository restaurantRepository,
         UserManager<AppUser> userManager,
         IUnitOfWork unitOfWork) : IRequestHandler<DeleteRestaurantCommand, ErrorOr<Deleted>>
     {
-        private readonly IRestaurantRepository _restaurantCategoryRepository = restaurantCategoryRepository;
+        private readonly IRestaurantRepository _restaurantRepository = restaurantRepository;
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<ErrorOr<Deleted>> Handle(DeleteRestaurantCommand command, CancellationToken cancellationToken)
         {
-            var RestaurantCategoy = await _restaurantCategoryRepository
-                .GetByIdAsync(command.CategoryId, cancellationToken);
+            var restaurant = await _restaurantRepository
+                .GetByIdAsync(command.Id, cancellationToken);
 
-            if (RestaurantCategoy == null)
-                return Error.NotFound(description: "restaurant is Already Deleted!");
+            if (restaurant == null)
+                return Error.NotFound(
+                 "Restaurant.NotFound",
+                 "Restaurant with the given id was not found");
 
-            var user = await _userManager.FindByIdAsync(RestaurantCategoy.userid);
+            var user = await _userManager.FindByIdAsync(restaurant.AppUserId);
 
             if (user == null)
-                return Error.Unexpected(description: "User is not found for this restaurant ");
+                return Error.Validation(
+               code: "User.NotFound",
+               description: "User does not exist");
 
-            var result = user.DeleteRestaurant(command.CategoryId);
-            if (result.IsError)
-                return result.Errors;
+            var deleteResult = user.DeleteRestaurant(command.Id);
+            if (deleteResult.IsError)
+             return deleteResult.Errors;
 
-            RestaurantCategoy.Delete("Admin ID"); //TODO
+            restaurant.Delete(command.AdminId);
+
             await _userManager.UpdateAsync(user);
-            await _restaurantCategoryRepository.UpdateAsync(RestaurantCategoy);
+            await _restaurantRepository.UpdateAsync(restaurant);
             await _unitOfWork.CommitChangesAsync();
 
             return Result.Deleted;
