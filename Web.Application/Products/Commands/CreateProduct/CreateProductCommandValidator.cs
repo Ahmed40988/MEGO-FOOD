@@ -1,28 +1,21 @@
-﻿using FluentValidation;
 
-namespace Web.Application.Products.Commands.CreateProduct
+using FluentValidation;
+
+namespace Web.Application.Products.Commands.CreateProduct;
+
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+    public CreateProductCommandValidator()
     {
-        public CreateProductCommandValidator()
-        {
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Product name is required.")
-                .MaximumLength(100).WithMessage("Product name must not exceed 100 characters.");
-
-            RuleFor(x => x.Description)
-                .MaximumLength(500).WithMessage("Description must not exceed 500 characters.");
-
-            RuleFor(x => x.ImageUrl)
-                .NotEmpty().WithMessage("Image URL is required.")
-                .Must(uri => Uri.IsWellFormedUriString(uri, UriKind.Absolute))
-                .WithMessage("Invalid Image URL format.");
-
-            RuleFor(x => x.Price)
-                .GreaterThan(0).WithMessage("Price must be greater than zero.");
-
-            RuleFor(x => x.MenuCategoryId)
-                .NotEmpty().WithMessage("Menu category ID is required.");
-        }
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(150);
+        RuleFor(x => x.Price).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.MenuCategoryId).NotEmpty();
+        RuleFor(x => x.Image)
+.NotNull().WithMessage("Profile image is required.")
+.Must(file => file.Length > 0).WithMessage("Profile image cannot be empty.")
+.Must(file => file.Length <= 2 * 1024 * 1024).WithMessage("Profile image must be less than 2 MB.")
+.Must(file => new[] { ".jpg", ".jpeg", ".png" }
+   .Contains(Path.GetExtension(file.FileName).ToLower()))
+.WithMessage("Only .jpg, .jpeg, and .png formats are allowed.");
     }
 }

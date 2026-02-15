@@ -30,7 +30,7 @@ namespace Web.Infrastructure.Orders.Persistence
             return await _dbContext.Orders
                 .Include(o => o.Items)
                 .Include(o => o.Address)
-                .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(o => o.Id == id && !o.Deleted, cancellationToken);
         }
 
         public async Task<IReadOnlyList<Order>> GetByUserIdAsync(
@@ -40,7 +40,7 @@ namespace Web.Infrastructure.Orders.Persistence
             return await _dbContext.Orders
                 .AsNoTracking()
                 .Include(o => o.Items)
-                .Where(o => o.UserId == userId)
+                .Where(o => o.UserId == userId && !o.Deleted)
                 .ToListAsync(cancellationToken);
         }
 
@@ -48,7 +48,7 @@ namespace Web.Infrastructure.Orders.Persistence
         {
             return await _dbContext.Orders
                 .AsNoTracking()
-                .AnyAsync(o => o.Id == orderId, cancellationToken);
+                .AnyAsync(o => o.Id == orderId && !o.Deleted, cancellationToken);
         }
     }
 }

@@ -34,6 +34,14 @@ public class Product : BaseModel
         SetMenuCategoryId(menuCategoryId);
     }
 
+    public void Update(string name, string description, string imageUrl, decimal price, string updatedById)
+    {
+        SetName(name);
+        SetDescription(description);
+        SetImageUrl(imageUrl);
+        SetPrice(price);
+        Touch(updatedById);
+    }
     public void Delete(string updatedById)
     {
         SoftDelete(updatedById);

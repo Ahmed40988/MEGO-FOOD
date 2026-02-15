@@ -3,7 +3,7 @@
 namespace Web.Application.MenuCategories.Commands.CreateMenuCategory
 {
     public record CreateMenuCategoryCommand(
-          string name,
-          string description,
-          Guid restaurantcategoryid) : IRequest<ErrorOr<MenuCategory>>;
+          string Name,
+          string Description,
+          Guid Restaurantid) : IRequest<ErrorOr<Guid>>;
 }

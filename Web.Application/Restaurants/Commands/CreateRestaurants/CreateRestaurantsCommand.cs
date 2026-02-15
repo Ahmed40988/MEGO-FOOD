@@ -7,5 +7,5 @@ namespace Web.Application.Restaurants.Commands.CreateRestaurants
           string Name,
           string Description,
           string UserId,
-          Guid BaseCatgoryId) : IRequest<ErrorOr<RestaurantResponce>>;
+          Guid BaseCatgoryId) : IRequest<ErrorOr<Guid>>;
 }

@@ -6,8 +6,13 @@ namespace Web.Application.Common.Interfaces
     {
         Task<MenuCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<MenuCategory>> GetByRestaurantIdAsync(Guid RestaurantId, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<MenuCategory>> SearchAsync(string keyword, CancellationToken cancellationToken = default);
-        Task<List<MenuCategory>> ListByRestaurantIdAsync(Guid RestaurantId);
+        Task<MenuCategory?> GetByNameAsync(string Name, CancellationToken cancellationToken = default);
+
+        Task<MenuCategory?> GetByIdIncludeProductAsync(Guid id, CancellationToken cancellationToken = default);
+
+
+            Task<IReadOnlyList<MenuCategory>> SearchAsync(string keyword, CancellationToken cancellationToken = default);
+        Task<List<MenuCategory>> ListAsync();
         Task<bool> ExistsAsync(Guid CategoryId, CancellationToken cancellationToken = default);
 
         Task AddAsync(MenuCategory menuCategory, CancellationToken cancellationToken = default);

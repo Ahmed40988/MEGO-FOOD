@@ -1,21 +1,32 @@
-﻿namespace Web.Application.Products.Commands.DeleteProduct
+
+using ErrorOr;
+using MediatR;
+
+namespace Web.Application.Products.Commands.DeleteProduct;
+
+public class DeleteProductCommandHandler(
+    IProductRepository productRepository,
+    IFileHelperService fileHelperService,
+    IUnitOfWork unitOfWork)
+    : IRequestHandler<DeleteProductCommand, ErrorOr<Success>>
 {
-    public class DeleteProductCommandHandler(IProductRepository productRepository, IUnitOfWork unitOfWork) : IRequestHandler<DeleteProductCommand, ErrorOr<Deleted>>
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IFileHelperService _fileHelperService = fileHelperService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public async Task<ErrorOr<Success>> Handle(DeleteProductCommand command, CancellationToken cancellationToken)
     {
-        private readonly IProductRepository _productRepository = productRepository;
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        var product = await productRepository.GetByIdAsync(command.ProductId);
 
-        public async Task<ErrorOr<Deleted>> Handle(DeleteProductCommand command, CancellationToken cancellationToken)
-        {
-            var product = await _productRepository.GetByIdAsync(command.productId);
-            if (product == null)
-                return Error.NotFound(description: "Product Is not found !");
+        if(product is null)
+            return Error.NotFound("Product.NotFound","Product not found");
 
-            product.Delete("AdminID"); // TOdo
+        if (!string.IsNullOrEmpty(product.ImageUrl))
+            _fileHelperService.DeleteFile(product.ImageUrl, "Products");
 
-            await _productRepository.UpdateAsync(product);
-            await _unitOfWork.CommitChangesAsync();
-            return Result.Deleted;
-        }
+        product.Delete(command.UserId);
+        await productRepository.UpdateAsync(product);
+        await unitOfWork.CommitChangesAsync();
+        return Result.Success;
     }
 }

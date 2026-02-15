@@ -26,13 +26,13 @@ namespace Web.Infrastructure.Products.Persistence
         {
             return await _dbContext.Products
                 .AsNoTracking()
-                .AnyAsync(p => p.Id == productId, cancellationToken);
+                .AnyAsync(p => p.Id == productId&&!p.Deleted, cancellationToken);
         }
 
         public async Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Products
-                .AnyAsync(p => p.Name == name, cancellationToken);
+                .AnyAsync(p => p.Name == name && !p.Deleted, cancellationToken);
         }
 
         public async Task<IReadOnlyList<Product>> GetByCategoryAsync(
@@ -41,21 +41,21 @@ namespace Web.Infrastructure.Products.Persistence
         {
             return await _dbContext.Products
                 .AsNoTracking()
-                .Where(p => p.MenuCategoryId == categoryId)
+                .Where(p => p.MenuCategoryId == categoryId && !p.Deleted)
                 .ToListAsync(cancellationToken);
         }
 
         public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Products
-                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(p => p.Id == id && !p.Deleted, cancellationToken);
         }
 
         public async Task<List<Product>> ListBymenuCategoryIdAsync(Guid menuCategoryId)
         {
             return await _dbContext.Products
                 .AsNoTracking()
-                .Where(p => p.MenuCategoryId == menuCategoryId)
+                .Where(p => p.MenuCategoryId == menuCategoryId && !p.Deleted)
                 .ToListAsync();
         }
 
@@ -71,6 +71,7 @@ namespace Web.Infrastructure.Products.Persistence
         {
             var products = await _dbContext.Products
                 .AsNoTracking()
+                .Where(p => !p.Deleted) 
                 .ToListAsync(cancellationToken);
 
             var result = products

@@ -1,6 +1,7 @@
-﻿using Web.Domain.MenuCategories;
+﻿using Web.Application.MenuCategories.MenuCategoryDTO;
+using Web.Domain.MenuCategories;
 
 namespace Web.Application.MenuCategories.Queries.GetMenuCategory
 {
-    public record GetMenuCategoryQuery(Guid RestaurantCategoryId, Guid menuCategoryId) : IRequest<ErrorOr<MenuCategory>>;
+    public record GetMenuCategoryQuery(Guid RestaurantId, Guid menuCategoryId) : IRequest<ErrorOr<MenuCategoryResponse>>;
 }

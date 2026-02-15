@@ -1,32 +1,50 @@
-﻿namespace Web.Application.Products.Commands.CreateProduct;
 
-public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, ErrorOr<Guid>>
+using ErrorOr;
+using MediatR;
+using Web.Domain.MenuCategories;
+
+namespace Web.Application.Products.Commands.CreateProduct;
+
+public class CreateProductCommandHandler(
+    IProductRepository productRepository,
+    IUserRepository userRepository,
+    IMenuCategoryRepository menuCategoryRepository,
+    IFileHelperService fileHelperService,
+    IUnitOfWork unitOfWork)
+    : IRequestHandler<CreateProductCommand, ErrorOr<Guid>>
 {
-    private readonly IProductRepository _repository;
+    private readonly IFileHelperService _fileHelperService = fileHelperService;
+    private readonly IUnitOfWork _unitOfWork= unitOfWork;
+    private readonly IProductRepository _productRepository;
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IMenuCategoryRepository _menuCategoryRepository= menuCategoryRepository;
 
-    public CreateProductCommandHandler(IProductRepository repository)
+    public async Task<ErrorOr<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        _repository = repository;
-    }
+        var user = await _userRepository.GetByIdAsync(command.AdminId);
+        if(user is null)
+            return Error.NotFound("Admin.NotFound", "Admin user not found");
 
-    public async Task<ErrorOr<Guid>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
-    {
-        // Check if a product with the same name already exists
-        if (await _repository.ExistsByNameAsync(request.Name, cancellationToken))
+        var category = await menuCategoryRepository.GetByIdIncludeProductAsync(command.MenuCategoryId);
+
+        if (category is null)
+            return Error.NotFound("MenuCategory.NotFound","MenuCategory not found");
+
+        string imageUrl = string.Empty;
+
+        if (command.Image is not null)
         {
-            return Error.Conflict("Product.DuplicateName", "A product with the same name already exists.");
+            imageUrl = _fileHelperService.UploadFile(command.Image, "Products");
         }
 
-        // Create the product using the constructor
-        var product = new Product(
-            request.Name,
-            request.Description,
-            request.ImageUrl,
-            request.Price,
-            request.MenuCategoryId
-        );
 
-        await _repository.AddAsync(product, cancellationToken);
+        var product = new Product(command.Name,command.Description,imageUrl,command.Price,command.MenuCategoryId);
+        var result=category.AddProduct(product);
+        if (result.IsError)
+            return result.Errors;
+
+        await productRepository.AddAsync(product,cancellationToken);
+        await unitOfWork.CommitChangesAsync();
 
         return product.Id;
     }

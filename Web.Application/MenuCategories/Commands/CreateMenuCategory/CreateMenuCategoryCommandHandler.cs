@@ -1,37 +1,38 @@
 ﻿using Web.Domain.MenuCategories;
+using Web.Domain.Restaurants;
 
 namespace Web.Application.MenuCategories.Commands.CreateMenuCategory
 {
     public class CreateMenuCategoryCommandHandler
       (IRestaurantRepository restaurantCategoryRepository,
+      IMenuCategoryRepository menuCategoryRepository,
       IUnitOfWork unitOfWork)
-      : IRequestHandler<CreateMenuCategoryCommand, ErrorOr<MenuCategory>>
+      : IRequestHandler<CreateMenuCategoryCommand, ErrorOr<Guid>>
     {
         private readonly IRestaurantRepository _restaurantRepository = restaurantCategoryRepository;
+        private readonly IMenuCategoryRepository _menuCategoryRepository = menuCategoryRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<ErrorOr<MenuCategory>> Handle(CreateMenuCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Guid>> Handle(CreateMenuCategoryCommand command, CancellationToken cancellationToken)
         {
-            var restaurantcategory = await _restaurantRepository.GetByIdAsync(command.restaurantcategoryid);
+            var restaurant = await _restaurantRepository.GetByIdAsync(command.Restaurantid);
 
-            if (restaurantcategory == null)
-                return Error.NotFound(description: "RestaurantCategory For this Product is not found");
-
+            if (restaurant == null)
+                return Error.NotFound("restaurant.NotFound", "restaurant For this Id is not found");
 
             var category = new MenuCategory(
-                command.name,
-                command.description,
-                command.restaurantcategoryid);
+                command.Name,
+                command.Description,
+                command.Restaurantid);
 
-            var addmenucategoryResult = restaurantcategory.AddMenuCategory(category);
+            var addmenucategoryResult = restaurant.AddMenuCategory(category);
 
             if (addmenucategoryResult.IsError)
                 return addmenucategoryResult.Errors;
 
-
-            await _restaurantRepository.UpdateAsync(restaurantcategory);
+            await _menuCategoryRepository.AddAsync(category, cancellationToken);
             await _unitOfWork.CommitChangesAsync();
-            throw new NotImplementedException();
+            return category.Id;
         }
     }
 }

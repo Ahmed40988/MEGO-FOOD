@@ -20,5 +20,49 @@ namespace Web.Infrastructure.Users.Persistence
         {
             return await _dbContext.Users.AnyAsync(x => x.Email == Email && x.Deleted, cancellationToken);
         }
+
+        public async Task AddAsync(AppUser user, CancellationToken cancellationToken = default)
+        {
+            await _dbContext.Users.AddAsync(user, cancellationToken);
+        }
+            public Task DeleteAsync(AppUser user, CancellationToken cancellationToken = default)
+            {
+                _dbContext.Users.Remove(user);
+                return Task.CompletedTask;
+        }
+        public async Task<AppUser?> GetByIdIncludeRestaurantAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users.Include(u=>u.Restaurant).FirstOrDefaultAsync(x => x.Id == userId && !x.Deleted, cancellationToken);
+        }
+
+        public async Task<AppUser?> GetByIdAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId && !x.Deleted, cancellationToken);
+
+
+        }
+
+        public async Task<AppUser?> GetByEmailAsync(string Email, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == Email && !x.Deleted, cancellationToken);
+        }
+
+        public async Task<List<AppUser>> ListAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users.Where(x => !x.Deleted).ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<AppUser>> ListWithRestaurantAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users.Include(u => u.Restaurant).Where(x => !x.Deleted).ToListAsync(cancellationToken);
+        }
+
+
+        public async Task UpdateAsync(AppUser user, CancellationToken cancellationToken = default)
+        {
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        }
     }
-}

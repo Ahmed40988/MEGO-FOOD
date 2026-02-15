@@ -9,14 +9,14 @@ namespace Web.Application.Restaurants.Commands.CreateRestaurants
         (IRestaurantRepository restaurantCategoryRepository,
         IBaseCategoryRepository baseCategoryRepository,
         IUnitOfWork unitOfWork,IUserRepository userRepository)
-        : IRequestHandler<CreateRestaurantsCommand, ErrorOr<RestaurantResponce>>
+        : IRequestHandler<CreateRestaurantsCommand, ErrorOr<Guid>>
     {
         private readonly IRestaurantRepository _restaurantRepository = restaurantCategoryRepository;
         private readonly IBaseCategoryRepository _baseCategoryRepository = baseCategoryRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IUserRepository _userRepository = userRepository;
 
-        public async Task<ErrorOr<RestaurantResponce>> Handle(CreateRestaurantsCommand command, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Guid>> Handle(CreateRestaurantsCommand command, CancellationToken cancellationToken)
         {
             var userExists = await _userRepository.ExistsAsync(command.UserId,cancellationToken);
 
@@ -47,12 +47,10 @@ namespace Web.Application.Restaurants.Commands.CreateRestaurants
                 command.UserId,
                 command.BaseCatgoryId);
 
-            var response = new RestaurantResponce(restaurant.Id, restaurant.Name, restaurant.Description, restaurant.BaseCatgoryId);
-
             await _restaurantRepository.AddAsync(restaurant, cancellationToken);
             await _unitOfWork.CommitChangesAsync();
 
-            return response;
+            return restaurant.Id;
         }
     }
 }

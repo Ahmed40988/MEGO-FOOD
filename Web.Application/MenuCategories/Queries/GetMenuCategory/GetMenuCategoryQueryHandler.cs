@@ -1,26 +1,29 @@
-﻿using Web.Domain.MenuCategories;
+﻿using Web.Application.MenuCategories.MenuCategoryDTO;
+using Web.Domain.MenuCategories;
 
 namespace Web.Application.MenuCategories.Queries.GetMenuCategory
 {
-    public class GetMenuCategoryQueryHandler(IRestaurantRepository restaurantCategoryRepository, IMenuCategoryRepository menuCategoryRepository) : IRequestHandler<GetMenuCategoryQuery, ErrorOr<MenuCategory>>
+    public class GetMenuCategoryQueryHandler(IRestaurantRepository restaurantCategoryRepository, IMenuCategoryRepository menuCategoryRepository) : IRequestHandler<GetMenuCategoryQuery, ErrorOr<MenuCategoryResponse>>
     {
         private readonly IRestaurantRepository _restaurantRepository = restaurantCategoryRepository;
         private readonly IMenuCategoryRepository _menuCategoryRepository = menuCategoryRepository;
 
-        public async Task<ErrorOr<MenuCategory>> Handle(GetMenuCategoryQuery comand, CancellationToken cancellationToken)
+        public async Task<ErrorOr<MenuCategoryResponse>> Handle(GetMenuCategoryQuery comand, CancellationToken cancellationToken)
         {
 
-            if (!await _restaurantRepository.ExistsAsync(comand.RestaurantCategoryId, cancellationToken))
+            if (!await _restaurantRepository.ExistsAsync(comand.RestaurantId, cancellationToken))
             {
-                return Error.NotFound("Restaurant Category  not found");
+                return Error.NotFound("Restaurant.NotFound", "Restaurant For This Menu is not found");
             }
 
             if (await _menuCategoryRepository.GetByIdAsync(comand.menuCategoryId, cancellationToken) is not MenuCategory menuCategory)
             {
-                return Error.NotFound(description: "menu Category not found");
+                return Error.NotFound("menu Category.NotFound", "menu Category not found");
             }
 
-            return menuCategory;
+            var response = new MenuCategoryResponse(menuCategory.Id,menuCategory.Name, menuCategory.Description, menuCategory.RestaurantId);
+
+            return response;
         }
     }
 }

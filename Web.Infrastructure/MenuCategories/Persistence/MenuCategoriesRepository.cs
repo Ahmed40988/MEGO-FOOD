@@ -27,13 +27,23 @@ namespace Web.Infrastructure.MenuCategories.Persistence
         {
             return await _dbContext.MenuCategories
                 .AsNoTracking()
-                .AnyAsync(c => c.Id == CategoryId, cancellationToken);
+                .AnyAsync(c => c.Id == CategoryId && !c.Deleted, cancellationToken);
         }
 
         public async Task<MenuCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.MenuCategories
-                .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted, cancellationToken);
+        }
+        public async Task<MenuCategory?> GetByIdIncludeProductAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.MenuCategories.Include(m=>m.Products)
+                .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted, cancellationToken);
+        }
+        public async Task<MenuCategory?> GetByNameAsync(string Name, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.MenuCategories
+                .FirstOrDefaultAsync(c => c.Name == Name && !c.Deleted, cancellationToken);
         }
 
         public async Task<IReadOnlyList<MenuCategory>> GetByRestaurantIdAsync(
@@ -42,15 +52,15 @@ namespace Web.Infrastructure.MenuCategories.Persistence
         {
             return await _dbContext.MenuCategories
                 .AsNoTracking()
-                .Where(c => c.RestaurantId == RestaurantId)
+                .Where(c => c.RestaurantId == RestaurantId && !c.Deleted)
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<MenuCategory>> ListByRestaurantIdAsync(Guid RestaurantId)
+        public async Task<List<MenuCategory>> ListAsync()
         {
             return await _dbContext.MenuCategories
                 .AsNoTracking()
-                .Where(c => c.RestaurantId == RestaurantId)
+                .Where(c => !c.Deleted)
                 .ToListAsync();
         }
 
@@ -66,6 +76,7 @@ namespace Web.Infrastructure.MenuCategories.Persistence
         {
             var categories = await _dbContext.MenuCategories
                 .AsNoTracking()
+                .Where(c => !c.Deleted)
                 .ToListAsync(cancellationToken);
 
             var result = categories

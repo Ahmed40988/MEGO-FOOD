@@ -12,9 +12,9 @@
             var menucategory = await _menuCategoryRepository.GetByIdAsync(command.CategoryId, cancellationToken);
 
             if (menucategory == null)
-                return Error.NotFound(description: "MenuCategory is not found !");
+                return Error.NotFound("MenuCategory.NotFound", "MenuCategory is not found !");
 
-            menucategory.Delete("AdminID");//ToDo
+            menucategory.Delete(command.AdminId);//ToDo
 
             await _menuCategoryRepository.UpdateAsync(menucategory);
             await _unitOfWork.CommitChangesAsync();

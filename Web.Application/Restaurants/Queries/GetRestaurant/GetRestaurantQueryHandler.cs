@@ -10,10 +10,9 @@ namespace Web.Application.Restaurants.Queries.GetRestaurant
         {
             var restaurant = await _restaurantRepository.GetByIdAsync(command.Id);
 
-            var response=new RestaurantResponce(restaurant.Id, restaurant.Name,restaurant.Description,restaurant.BaseCatgoryId);
             return restaurant is null ?
                 Error.NotFound("Restaurant.NotFound", "Restaurant by this Id is not found !")
-                : response;
+                : new RestaurantResponce(restaurant.Id, restaurant.Name, restaurant.Description, restaurant.BaseCatgoryId);
 
         }
     }

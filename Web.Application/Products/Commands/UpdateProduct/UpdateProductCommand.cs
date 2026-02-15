@@ -3,13 +3,13 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace Web.Application.Products.Commands.CreateProduct;
+namespace Web.Application.Products.Commands.UpdateProduct;
 
-public record CreateProductCommand(
+public record UpdateProductCommand(
+    Guid ProductId,
     string Name,
     string Description,
     IFormFile? Image,
     decimal Price,
-    Guid MenuCategoryId,
-    string AdminId
+    string UserId
 ) : IRequest<ErrorOr<Guid>>;

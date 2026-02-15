@@ -63,7 +63,30 @@ namespace Web.Domain.MenuCategories
             SoftDelete(updatedById);
             _products.Clear();
         }
+        public void Update(string adminId, string name, string description, Guid restaurantId)
+        {
+            SetName(name);
+            SetDescription(description);
+            SetrestaurantId(restaurantId);
+            Touch(adminId);
+        }
 
+        private void SetName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name is required.", nameof(name));
 
-    }
+            Name = name.Trim();
+        }
+
+        private void SetDescription(string description)
+        {
+            Description = description?.Trim() ?? string.Empty;
+        }
+        private void SetrestaurantId(Guid restaurantId)
+        {
+            RestaurantId = restaurantId;
+        }
+
+    } 
 }

@@ -34,7 +34,7 @@ namespace Web.Application.Accounts.Commands.CompleteProfile
 
             if (command.Image is not null)
             {
-                user.PhotoURl = _fileHelperService.UploadFile(command.Image, "User");
+                user.PhotoURl = _fileHelperService.UploadFile(command.Image, "Products");
             }
 
             var updateResult = await _userManager.UpdateAsync(user);

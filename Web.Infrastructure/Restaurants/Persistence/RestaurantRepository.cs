@@ -20,32 +20,34 @@ namespace Web.Infrastructure.Restaurants.Persistence
             return Task.CompletedTask;
         }
 
-        public async Task<bool> ExistsAsync(Guid CategorytId, CancellationToken cancellationToken = default)
+        public async Task<bool> ExistsAsync(Guid RestaurantId, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Restaurants.AsNoTracking().AnyAsync(c => c.Id == CategorytId);
+            return await _dbContext.Restaurants.AsNoTracking().AnyAsync(r => r.Id == RestaurantId && !r.Deleted);
         }
 
         public async Task<Restaurant?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Restaurants.FirstOrDefaultAsync(c => c.Id == id&&!c.Deleted);
+            return await _dbContext.Restaurants.Include(r => r.MenuCategories)
+        .FirstOrDefaultAsync(r => r.Id == id && !r.Deleted);
         }
 
         public async Task<Restaurant?> GetByNameAsync(string Name, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Restaurants.FirstOrDefaultAsync(c => c.Name==Name);
+            return await _dbContext.Restaurants.FirstOrDefaultAsync(b => b.Name == Name && !b.Deleted, cancellationToken);
         }
 
         public async Task<IReadOnlyList<Restaurant>> ListRestaurants(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Restaurants
                 .AsNoTracking()
+                .Where(r => !r.Deleted)
                 .ToListAsync(cancellationToken);
         }
 
 
-        public Task RemoveRangeAsync(List<Restaurant> restaurantCategories)
+        public Task RemoveRangeAsync(List<Restaurant> restaurantes)
         {
-            _dbContext.RemoveRange(restaurantCategories);
+            _dbContext.RemoveRange(restaurantes);
             return Task.CompletedTask;
         }
 
@@ -54,6 +56,7 @@ namespace Web.Infrastructure.Restaurants.Persistence
 
             var categories = await _dbContext.Restaurants
                 .AsNoTracking()
+                  .Where(r => !r.Deleted)
                 .ToListAsync(cancellationToken);
 
             var result = categories
@@ -72,9 +75,9 @@ namespace Web.Infrastructure.Restaurants.Persistence
         }
 
 
-        public Task UpdateAsync(Restaurant restaurantCategory, CancellationToken cancellationToken = default)
+        public Task UpdateAsync(Restaurant restaurant, CancellationToken cancellationToken = default)
         {
-            _dbContext.Update(restaurantCategory);
+            _dbContext.Update(restaurant);
             return Task.CompletedTask;
         }
     }
