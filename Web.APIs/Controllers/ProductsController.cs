@@ -46,19 +46,19 @@ namespace Web.APIs.Controllers
         }
 
 
-        ///// <summary>
-        ///// Get all products by MenuCategoryId
-        ///// </summary>
-        //[HttpGet("Get_Products_By_Category")]
-        //public async Task<IActionResult> GetProductsByCategory([FromQuery] Guid categoryId)
-        //{
-        //    var query = new GetProductsByCategoryQuery(categoryId);
-        //    var result = await _mediator.Send(query);
+        /// <summary>
+        /// Get all products by MenuCategoryId
+        /// </summary>
+        [HttpGet("Get_Products_By_Category")]
+        public async Task<IActionResult> GetProductsByCategory([FromQuery] Guid categoryId)
+        {
+            var query = new GetProductsByCategoryQuery(categoryId);
+            var result = await _mediator.Send(query);
 
-        //    return result.Match(
-        //        list => Ok(list),
-        //        errors => ToProblem(errors));
-        //}
+            return result.Match(
+                list => Ok(list),
+                errors => ToProblem(errors));
+        }
 
 
         /// <summary>
