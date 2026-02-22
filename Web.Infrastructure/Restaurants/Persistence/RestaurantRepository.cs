@@ -1,4 +1,10 @@
-﻿using Web.Application.Common.Interfaces;
+﻿using Web.Application.BaseCategories.BaseCategoryDTO;
+using Web.Application.Common;
+using System.Linq.Dynamic.Core;
+
+using Web.Application.Common.Interfaces;
+using Web.Application.Common.Pagination;
+using Web.Application.Restaurants.Contracts;
 using Web.Domain.Restaurants;
 using Web.Infrastructure.Common.Persistence.Data;
 
@@ -36,15 +42,57 @@ namespace Web.Infrastructure.Restaurants.Persistence
             return await _dbContext.Restaurants.FirstOrDefaultAsync(b => b.Name == Name && !b.Deleted, cancellationToken);
         }
 
-        public async Task<IReadOnlyList<Restaurant>> ListRestaurants(CancellationToken cancellationToken = default)
+        public async Task<PaginatedList<RestaurantResponce>> ListRestaurants(
+            RequestFilters filters,
+            CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Restaurants
+            var query = _dbContext.Restaurants
+                .Where(b => !b.Deleted)
                 .AsNoTracking()
-                .Where(r => !r.Deleted)
+                .AsQueryable();
+
+
+            if (!string.IsNullOrEmpty(filters.SearchValue))
+            {
+                query = query.Where(b =>
+                    b.Name.Contains(filters.SearchValue) ||
+                    b.Description.Contains(filters.SearchValue));
+            }
+
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+
+            if (!string.IsNullOrEmpty(filters.SortColumn))
+            {
+                query = query.OrderBy($"{filters.SortColumn} {filters.SortDirection}");
+            }
+            else
+            {
+                query = query.OrderBy(x => x.Name);
+            }
+
+            if (filters.PageNumber > 0 && filters.PageSize > 0)
+            {
+                var skip = (filters.PageNumber - 1) * filters.PageSize;
+                query = query.Skip(skip).Take(filters.PageSize);
+            }
+
+            var items = await query
+                .Select(x => new RestaurantResponce(
+                    x.Id,
+                    x.Name,
+                    x.Description
+                    ,x.BaseCatgoryId))
                 .ToListAsync(cancellationToken);
+
+            return new PaginatedList<RestaurantResponce>
+                (items,
+                filters.PageNumber,
+                totalCount,
+                filters.PageSize);
+
         }
-
-
         public Task RemoveRangeAsync(List<Restaurant> restaurantes)
         {
             _dbContext.RemoveRange(restaurantes);

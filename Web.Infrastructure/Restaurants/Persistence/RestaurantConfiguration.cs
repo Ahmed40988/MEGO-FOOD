@@ -21,9 +21,11 @@ public class RestaurantConfiguration
                .IsRequired();
 
         builder.HasOne(r => r.AppUser)
-               .WithMany()
+               .WithMany(u => u.Restaurant)
                .HasForeignKey(r => r.AppUserId)
+               .IsRequired()
                .OnDelete(DeleteBehavior.Restrict);
+
 
         builder.HasMany(r => r.MenuCategories)
                .WithOne(m => m.restaurant)

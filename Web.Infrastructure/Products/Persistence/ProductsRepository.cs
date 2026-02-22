@@ -1,4 +1,9 @@
-﻿using Web.Application.Common.Interfaces;
+﻿using Web.Application.Common;
+using Web.Application.Common.Interfaces;
+using Web.Application.Common.Pagination;
+using Web.Application.Products.ProductDTO;
+using System.Linq.Dynamic.Core;
+using Web.Application.Restaurants.Contracts;
 using Web.Infrastructure.Common.Persistence.Data;
 
 namespace Web.Infrastructure.Products.Persistence
@@ -35,15 +40,60 @@ namespace Web.Infrastructure.Products.Persistence
                 .AnyAsync(p => p.Name == name && !p.Deleted, cancellationToken);
         }
 
-        public async Task<IReadOnlyList<Product>> GetByCategoryAsync(
+        public async Task<PaginatedList<ProductResponse>> GetByCategoryAsync(RequestFilters filters,
             Guid categoryId,
             CancellationToken cancellationToken = default)
-        {
-            return await _dbContext.Products
-                .AsNoTracking()
-                .Where(p => p.MenuCategoryId == categoryId && !p.Deleted)
-                .ToListAsync(cancellationToken);
-        }
+        
+            {
+                var query = _dbContext.Products
+                    .Where(b => !b.Deleted)
+                    .AsNoTracking()
+                    .AsQueryable();
+
+
+                if (!string.IsNullOrEmpty(filters.SearchValue))
+                {
+                    query = query.Where(b =>
+                        b.Name.Contains(filters.SearchValue) ||
+                        b.Description.Contains(filters.SearchValue));
+                }
+
+
+                var totalCount = await query.CountAsync(cancellationToken);
+
+
+                if (!string.IsNullOrEmpty(filters.SortColumn))
+                {
+                    query = query.OrderBy($"{filters.SortColumn} {filters.SortDirection}");
+                }
+                else
+                {
+                    query = query.OrderBy(x => x.Name);
+                }
+
+                if (filters.PageNumber > 0 && filters.PageSize > 0)
+                {
+                    var skip = (filters.PageNumber - 1) * filters.PageSize;
+                    query = query.Skip(skip).Take(filters.PageSize);
+                }
+
+                var items = await query
+                    .Select(x => new ProductResponse(
+                        x.Id,
+                        x.Name,
+                        x.Description
+                        ,x.ImageUrl
+                        ,x.Price
+                        ))
+                    .ToListAsync(cancellationToken);
+
+                return new PaginatedList<ProductResponse>
+                    (items,
+                    filters.PageNumber,
+                    totalCount,
+                    filters.PageSize);
+
+            }
 
         public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {

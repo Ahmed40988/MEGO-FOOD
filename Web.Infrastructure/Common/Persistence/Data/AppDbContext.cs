@@ -15,7 +15,7 @@ namespace Web.Infrastructure.Common.Persistence.Data
         { }
 
         public async Task CommitChangesAsync()
-        {
+        {   
             await SaveChangesAsync();
         }
         public DbSet<BaseCategory> BaseCategories => Set<BaseCategory>();
@@ -24,6 +24,7 @@ namespace Web.Infrastructure.Common.Persistence.Data
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<orderitem> Orderitems => Set<orderitem>();
+        public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

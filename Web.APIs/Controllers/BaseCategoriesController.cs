@@ -5,6 +5,7 @@ using Web.Application.BaseCategories.Commands.DeleteBaseCategory;
 using Web.Application.BaseCategories.Commands.UpdateBaseCategory;
 using Web.Application.BaseCategories.Queries.GetBaseCategories;
 using Web.Application.BaseCategories.Queries.GetBaseCategoryById;
+using Web.Application.Common;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Web.APIs.Controllers
@@ -35,14 +36,13 @@ namespace Web.APIs.Controllers
          );
         }
         [HttpGet("Get_All_BaseCategories")]
-        public async Task<IActionResult> GetAllBaseCategories()
+        public async Task<IActionResult> GetAllBaseCategories([FromQuery]RequestFilters filters)
         {
-            var Query = new GetBaseCategoriesQuery();
+            var Query = new GetBaseCategoriesQuery(filters);
             var result = await _mediator.Send(Query);
             return result.Match(
            list => Ok(list),
-           errors => ToProblem(errors)
-       );
+           errors => ToProblem(errors));
         }
 
 

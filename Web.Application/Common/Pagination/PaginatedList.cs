@@ -1,4 +1,4 @@
-﻿namespace Web.Infrastructure.Service.Pagination
+﻿namespace Web.Application.Common.Pagination
 {
     public class PaginatedList<T>(List<T> items, int pageNumber, int count, int pageSize)
     {
@@ -10,13 +10,11 @@
 
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
+            
             var count = await source.CountAsync(cancellationToken);
             var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 
             return new PaginatedList<T>(items, pageNumber, count, pageSize);
         }
-
-
-
-    }
+        }
 }

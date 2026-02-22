@@ -3,6 +3,7 @@ using Web.Application.BaseCategories.Commands.DeleteBaseCategory;
 using Web.Application.BaseCategories.Commands.UpdateBaseCategory;
 using Web.Application.BaseCategories.Queries.GetBaseCategories;
 using Web.Application.BaseCategories.Queries.GetBaseCategoryById;
+using Web.Application.Common;
 using Web.Application.Restaurants.Commands.CreateRestaurants;
 using Web.Application.Restaurants.Commands.DeleteRestaurants;
 using Web.Application.Restaurants.Contracts;
@@ -45,9 +46,9 @@ namespace Web.APIs.Controllers
 
 
         [HttpGet("Get_All_Restaurantes")]
-        public async Task<IActionResult> GetAllRestaurantes()
+        public async Task<IActionResult> GetAllRestaurantes([FromQuery] RequestFilters filters)
         {
-            var Query = new ListRestaurantQuerys();
+            var Query = new ListRestaurantQuerys(filters);
             var result = await _mediator.Send(Query);
             return result.Match(
            list => Ok(list),

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Web.Application.Common.Interfaces;
+using Web.Infrastructure.Addresses.Persistence;
 using Web.Infrastructure.BaseCategories.Persistence;
 using Web.Infrastructure.Common.Persistence.Data;
 using Web.Infrastructure.MenuCategories.Persistence;
@@ -8,6 +9,7 @@ using Web.Infrastructure.OrderItems.Persistence;
 using Web.Infrastructure.Orders.Persistence;
 using Web.Infrastructure.Products.Persistence;
 using Web.Infrastructure.Restaurants.Persistence;
+using Web.Infrastructure.Service.Adress;
 using Web.Infrastructure.Service.Auth;
 using Web.Infrastructure.Service.FuzzzySearch;
 using Web.Infrastructure.Services.Files;
@@ -22,7 +24,8 @@ namespace Web.Infrastructure
             return services
                 .AddPersistence()
                 .AddDatabaseConfig(configuration)
-                .AddIdentityConfig();
+                .AddIdentityConfig()
+                .Adress();
         }
 
         public static IServiceCollection AddPersistence(this IServiceCollection services)
@@ -39,6 +42,7 @@ namespace Web.Infrastructure
             services.AddScoped<IOrderItemRepository, OrderItemsRepository>();
             services.AddScoped<IOrderRepository, OrdersRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAdressesRepository, AdressesRepository>();
 
 
             return services;
@@ -61,6 +65,11 @@ namespace Web.Infrastructure
        .AddEntityFrameworkStores<AppDbContext>()
        .AddDefaultTokenProviders();
 
+            return services;
+        }
+        public static IServiceCollection Adress(this IServiceCollection services)
+        {
+            services.AddHttpClient<IReverseGeocodingService, OpenStreetMapGeocodingService>();
             return services;
         }
 

@@ -1,5 +1,8 @@
 ﻿using System.Linq.Dynamic.Core;
+using Web.Application.BaseCategories.BaseCategoryDTO;
+using Web.Application.Common;
 using Web.Application.Common.Interfaces;
+using Web.Application.Common.Pagination;
 using Web.Domain.BaseCategories;
 using Web.Infrastructure.Common.Persistence.Data;
 
@@ -33,13 +36,56 @@ namespace Web.Infrastructure.BaseCategories.Persistence
                 .FirstOrDefaultAsync(b => b.Name == name && !b.Deleted, cancellationToken);
         }
 
-        public async Task<IReadOnlyList<BaseCategory>> GetAllAsync(
+        public async Task<PaginatedList<BaseCategoryResponse>> GetAllAsync(
+            RequestFilters filters,
             CancellationToken cancellationToken = default)
         {
-            return await _dbContext.BaseCategories.Where(b=>!b.Deleted)
+            var query = _dbContext.BaseCategories
+                .Where(b => !b.Deleted)
                 .AsNoTracking()
+                .AsQueryable();
+
+       
+            if (!string.IsNullOrEmpty(filters.SearchValue))
+            {
+                query = query.Where(b =>
+                    b.Name.Contains(filters.SearchValue) ||
+                    b.Description.Contains(filters.SearchValue));
+            }
+
+            
+            var totalCount = await query.CountAsync(cancellationToken);
+
+         
+            if (!string.IsNullOrEmpty(filters.SortColumn))
+            {
+                query = query.OrderBy($"{filters.SortColumn} {filters.SortDirection}");
+            }
+            else
+            {
+                query = query.OrderBy(x => x.Name);
+            }
+
+            if (filters.PageNumber > 0 && filters.PageSize > 0)
+            {
+                var skip = (filters.PageNumber - 1) * filters.PageSize;
+                query = query.Skip(skip).Take(filters.PageSize);
+            }
+
+            var items = await query
+                .Select(x => new BaseCategoryResponse(
+                    x.Id,
+                    x.Name,
+                    x.Description))
                 .ToListAsync(cancellationToken);
+
+            return new PaginatedList<BaseCategoryResponse>
+                (items,
+                filters.PageNumber, 
+                totalCount, 
+                filters.PageSize);
         }
+
 
         public Task UpdateAsync(
             BaseCategory entity,
