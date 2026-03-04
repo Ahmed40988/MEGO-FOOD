@@ -1,8 +1,3 @@
-
-using ErrorOr;
-using MediatR;
-using Web.Domain.MenuCategories;
-
 namespace Web.Application.Products.Commands.CreateProduct;
 
 public class CreateProductCommandHandler(

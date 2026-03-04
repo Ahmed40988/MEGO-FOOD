@@ -5,6 +5,7 @@ using Web.Application.Products.ProductDTO;
 using System.Linq.Dynamic.Core;
 using Web.Application.Restaurants.Contracts;
 using Web.Infrastructure.Common.Persistence.Data;
+using ErrorOr;
 
 namespace Web.Infrastructure.Products.Persistence
 {
@@ -115,27 +116,38 @@ namespace Web.Infrastructure.Products.Persistence
             return Task.CompletedTask;
         }
 
-        public async Task<IReadOnlyList<Product>> SearchAsync(
+        public async Task<ErrorOr<List<ProductResponse>>> SearchAsync(
             string keyword,
             CancellationToken cancellationToken = default)
         {
             var products = await _dbContext.Products
                 .AsNoTracking()
-                .Where(p => !p.Deleted) 
+                .Where(p => !p.Deleted &&
+                    EF.Functions.Like(p.Name, $"%{keyword}%"))
+                .Take(50)
                 .ToListAsync(cancellationToken);
+            if(products.Count == 0)
+                return Error.NotFound("Products.NotFound","No Found Products With This Keyword Search") ;
 
-            var result = products
+            var result= products
                 .Select(p => new
                 {
                     Product = p,
-                    Score = _fuzzySearchRepository.CalculateSimilarity(keyword, p.Name)
+                    Score = _fuzzySearchRepository.CalculateSimilarity(
+                        keyword,
+                        p.Name)
                 })
-                .Where(x => x.Score >= 80)
                 .OrderByDescending(x => x.Score)
                 .Select(x => x.Product)
+                .Take(20)
                 .ToList();
 
-            return result;
+            return result.Select(p => new ProductResponse(
+                p.Id,
+                p.Name,
+                p.Description,
+                p.ImageUrl,
+                p.Price)).ToList();
         }
 
         public Task UpdateAsync(Product product, CancellationToken cancellationToken = default)
