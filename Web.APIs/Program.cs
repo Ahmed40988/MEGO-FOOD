@@ -36,6 +36,7 @@ namespace Web.APIs
 
             app.UseCors();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
