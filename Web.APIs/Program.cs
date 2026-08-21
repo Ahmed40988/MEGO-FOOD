@@ -29,6 +29,7 @@ namespace Web.APIs
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "MEGO FOOD v1");
                 c.RoutePrefix = "swagger";
+                c.ConfigObject.PersistAuthorization = true;
             });
 
             app.UseSerilogRequestLogging();

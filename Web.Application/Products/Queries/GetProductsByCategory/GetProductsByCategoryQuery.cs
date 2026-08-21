@@ -7,4 +7,4 @@ using Web.Application.Products.ProductDTO;
 
 namespace Web.Application.Products.Queries.GetProductsByCategory;
 
-public record GetProductsByCategoryQuery(RequestFilters Filters,Guid CategoryId) : IRequest<ErrorOr<PaginatedList<ProductResponse>>>;
+public record GetProductsByCategoryQuery(RequestFilters Filters,Guid?CategoryId) : IRequest<ErrorOr<PaginatedList<ProductResponse>>>;

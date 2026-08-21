@@ -13,7 +13,7 @@ namespace Web.Domain.Orders
         public AppUser User { get; private set; } = default!;
 
         public int AddressId { get; private set; }
-        public Address Address { get; private set; } = default!;
+        public UserAddress Address { get; private set; } = default!;
 
         public OrderStatus Status { get; private set; }
         public decimal Subtotal { get; private set; }

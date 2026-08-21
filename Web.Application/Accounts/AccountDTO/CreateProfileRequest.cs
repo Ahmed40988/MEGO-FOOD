@@ -8,7 +8,6 @@ namespace Web.Application.Accounts.AccountDTO
         string FullName,
         string Phone,
         DateOnly DateOfBirth,
-        AddressRequestDto Adresss,
         IFormFile Image
 
         );

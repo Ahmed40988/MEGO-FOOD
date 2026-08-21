@@ -42,16 +42,25 @@ namespace Web.Infrastructure.Restaurants.Persistence
             return await _dbContext.Restaurants.FirstOrDefaultAsync(b => b.Name == Name && !b.Deleted, cancellationToken);
         }
 
-        public async Task<PaginatedList<RestaurantResponce>> ListRestaurants(
+        public async Task<PaginatedList<RestaurantResponce>> ListRestaurants(Guid ?baseCategoryId,
             RequestFilters filters,
             CancellationToken cancellationToken = default)
         {
+
             var query = _dbContext.Restaurants
                 .Where(b => !b.Deleted)
                 .AsNoTracking()
                 .AsQueryable();
 
+            if (baseCategoryId.HasValue)
+            {
+                query = query.Where(b => b.BaseCatgoryId == baseCategoryId.Value);
+            }
 
+            if (filters.TopRaing == true)
+            {
+                query = query.Where(b => b.Rating >= 4).OrderByDescending(x => x.Rating).Take(30);
+            }
             if (!string.IsNullOrEmpty(filters.SearchValue))
             {
                 query = query.Where(b =>
@@ -83,6 +92,7 @@ namespace Web.Infrastructure.Restaurants.Persistence
                     x.Id,
                     x.Name,
                     x.Description
+                    ,x.Rating
                     ,x.BaseCatgoryId))
                 .ToListAsync(cancellationToken);
 

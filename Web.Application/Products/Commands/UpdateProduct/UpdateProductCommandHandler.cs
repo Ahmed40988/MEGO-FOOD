@@ -1,16 +1,18 @@
 
 using ErrorOr;
 using MediatR;
+using System.Reflection;
+using Web.Application.Common.File;
 
 namespace Web.Application.Products.Commands.UpdateProduct;
 
 public class UpdateProductCommandHandler(
     IProductRepository productRepository,
-    IFileHelperService fileHelperService,
+    IFileStorageService fileStorageService,
     IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateProductCommand, ErrorOr<Guid>>
 {
-    private readonly IFileHelperService _fileHelperService = fileHelperService;
+    private readonly IFileStorageService _fileStorageService = fileStorageService;
 
     public async Task<ErrorOr<Guid>> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
@@ -23,10 +25,17 @@ public class UpdateProductCommandHandler(
 
         if (command.Image is not null)
         {
-            if (!string.IsNullOrEmpty(product.ImageUrl))
-                _fileHelperService.DeleteFile(product.ImageUrl, "Products");
+            using var stream = command.Image.OpenReadStream();
 
-            imageUrl = _fileHelperService.UploadFile(command.Image, "Products");
+            imageUrl = await _fileStorageService.UpdateFileAsync(
+                stream,
+                command.Image.FileName,
+                product.ImageUrl,
+                "Products-images");
+            if (string.IsNullOrWhiteSpace(imageUrl))
+            {
+                return Error.Failure("FileUpload.Failed", "Failed to upload the image file.");
+            }
         }
 
         product.Update(command.Name,command.Description,imageUrl,command.Price,command.UserId);

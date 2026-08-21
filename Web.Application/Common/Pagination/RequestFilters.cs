@@ -7,6 +7,7 @@
         public string? SearchValue { get; init; }
         public string? SortColumn { get; init; }
         public string? SortDirection { get; init; } = "ASC";
+        public bool ? TopRaing { get; init; }
     }
     public record AddtionalRequestFilters
     {

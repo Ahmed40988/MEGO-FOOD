@@ -44,6 +44,34 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\User\" />
+    <Folder Include="wwwroot\Products\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\User\232d1016-2ca1-4b5c-bfa5-b5ef5edc7fb8_لوجو.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\User\6b09c7d1-6b15-453c-9a63-47c2dd4cad09_لوجو.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\User\a7d486ca-2b94-4ef0-ba52-607f4b071937_youtube-g3f939864d_1280.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\User\aba76292-9bec-49ac-b7fa-82a261ce0d7d_WhatsApp Image 2025-08-11 at 16.42.21_ed9ae552.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\User\bd0e1240-566f-4d36-bd67-e2f3512c8366_لوجو.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\User\d0b04e7c-37a7-4867-8090-1d27de8877ef_youtube-g3f939864d_1280.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\User\d8b81a04-19f5-44d8-b523-f965454e315f_لوجو.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\User\eb49ad5b-3d1d-4a04-a047-00701ededd24_1684923575771.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

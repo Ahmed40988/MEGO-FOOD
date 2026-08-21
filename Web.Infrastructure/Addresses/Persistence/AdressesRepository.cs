@@ -12,12 +12,12 @@ namespace Web.Infrastructure.Addresses.Persistence
             await _dbContext.UserAddresses.AddAsync(Entity);
         }
 
-        public async Task<UserAddress> UserAdressExist(string UserId,double Lat,double Lng,CancellationToken cancellationToken)
+        public async Task<BaseAddress> UserAdressExist(string UserId,double Lat,double Lng,CancellationToken cancellationToken)
         {
             var existing = await _dbContext.UserAddresses.FirstOrDefaultAsync(x =>
-        x.UserId == UserId &&
-        Math.Abs(x.Latitude - Lat) < 0.0001 &&
-        Math.Abs(x.Longitude - Lng) < 0.0001);
+                    x.UserId == UserId &&
+                    Math.Abs(x.Latitude - Lat) < 0.0001 &&
+                    Math.Abs(x.Longitude - Lng) < 0.0001);
 
             return existing;
         } 

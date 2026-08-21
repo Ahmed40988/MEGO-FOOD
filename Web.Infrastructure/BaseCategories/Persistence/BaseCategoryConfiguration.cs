@@ -17,7 +17,7 @@ namespace Web.Infrastructure.BaseCategories.Persistence
                    .HasMaxLength(100);
 
             builder.Property(b => b.Description)
-                   .HasMaxLength(500);
+                   .HasMaxLength(1000);
 
             builder.Property(b => b.UserId)
                    .IsRequired();

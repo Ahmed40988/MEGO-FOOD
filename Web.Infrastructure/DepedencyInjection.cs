@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Web.Application.Common.File;
 using Web.Application.Common.Interfaces;
 using Web.Infrastructure.Addresses.Persistence;
 using Web.Infrastructure.BaseCategories.Persistence;
@@ -9,10 +10,11 @@ using Web.Infrastructure.OrderItems.Persistence;
 using Web.Infrastructure.Orders.Persistence;
 using Web.Infrastructure.Products.Persistence;
 using Web.Infrastructure.Restaurants.Persistence;
+using Web.Infrastructure.Seeding;
 using Web.Infrastructure.Service.Adress;
 using Web.Infrastructure.Service.Auth;
+using Web.Infrastructure.Service.File;
 using Web.Infrastructure.Service.FuzzzySearch;
-using Web.Infrastructure.Services.Files;
 using Web.Infrastructure.Users.Persistence;
 
 namespace Web.Infrastructure
@@ -38,11 +40,15 @@ namespace Web.Infrastructure
             services.AddScoped<IProductRepository, ProductsRepository>();
             services.AddScoped<IMenuCategoryRepository, MenuCategoriesRepository>();
             services.AddScoped<IFuzzySearchRepository, FuzzySearchRepository>();
-            services.AddScoped<IFileHelperService, FileHelper>();
+            services.AddScoped<IBaseUrlService, BaseUrlService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IFileStorageService, LocalFileStorageService>();
+            services.AddScoped<IExcelService, ExcelService>();
             services.AddScoped<IOrderItemRepository, OrderItemsRepository>();
             services.AddScoped<IOrderRepository, OrdersRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAdressesRepository, AdressesRepository>();
+            services.AddScoped<ISeedRepository, SeedRepository>();
 
 
             return services;

@@ -1,4 +1,5 @@
-﻿using Web.Application.Admins.Queries.DeleteUser;
+﻿using Web.Application.Admins.Commands;
+using Web.Application.Admins.Queries.DeleteUser;
 
 namespace Web.APIs.Controllers
 {
@@ -25,5 +26,17 @@ namespace Web.APIs.Controllers
              );
 
         }
-    }
+
+        //[HttpPost("SeedData")]
+        //[Authorize]
+        //public async Task<IActionResult> SeedData()
+        //{
+        //    var adminid = User.GetUserId();
+        //    var result = await _Mediator.Send(new SeedDataCommand(adminid));
+        //    return result.Match(
+        //         _ => Ok(),
+        //         errors => ToProblem(errors)
+        //     );
+        //}
+}
 }

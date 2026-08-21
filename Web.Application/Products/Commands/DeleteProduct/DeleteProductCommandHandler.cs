@@ -1,17 +1,18 @@
 
 using ErrorOr;
 using MediatR;
+using Web.Application.Common.File;
 
 namespace Web.Application.Products.Commands.DeleteProduct;
 
 public class DeleteProductCommandHandler(
     IProductRepository productRepository,
-    IFileHelperService fileHelperService,
+    IFileStorageService fileStorageService,
     IUnitOfWork unitOfWork)
     : IRequestHandler<DeleteProductCommand, ErrorOr<Success>>
 {
     private readonly IProductRepository _productRepository = productRepository;
-    private readonly IFileHelperService _fileHelperService = fileHelperService;
+    private readonly IFileStorageService _fileStorageService = fileStorageService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<ErrorOr<Success>> Handle(DeleteProductCommand command, CancellationToken cancellationToken)
@@ -22,7 +23,7 @@ public class DeleteProductCommandHandler(
             return Error.NotFound("Product.NotFound","Product not found");
 
         if (!string.IsNullOrEmpty(product.ImageUrl))
-            _fileHelperService.DeleteFile(product.ImageUrl, "Products");
+            await _fileStorageService.DeleteFileAsync(product.ImageUrl);
 
         product.Delete(command.UserId);
         await productRepository.UpdateAsync(product);

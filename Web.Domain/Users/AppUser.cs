@@ -21,14 +21,11 @@ namespace Web.Domain.Users
         private readonly List<RefreshToken> _refreshTokens = new();
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
 
-        private readonly List<Address> _addresses = new();
-        public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
-
-
         private readonly List<Restaurant> _restaurant = new();
         public IReadOnlyCollection<Restaurant> Restaurant => _restaurant.AsReadOnly();
 
-
+        private readonly List<UserAddress> _Addresses = new();
+        public IReadOnlyCollection<UserAddress> Addresses => _Addresses.AsReadOnly();
 
         private void Touch(string updatedById)
         {
@@ -61,26 +58,13 @@ namespace Web.Domain.Users
         public void UpdateProfile(
     string fullName,
     string phone,
-    DateOnly dateOfBirth,
-    Address address)
+    DateOnly dateOfBirth)
         {
             FullName = fullName;
             PhoneNumber = phone;
             DateOfBirth = dateOfBirth;
-            AddAddress(address);
         }
 
-        public ErrorOr<Success> AddAddress(Address address)
-        {
-            if (_addresses.Contains(address))
-                return addressErrors.Duplicatedaddress;
-
-            if (address is null)
-                return addressErrors.addressIsnulll;
-
-            _addresses.Add(address);
-            return Result.Success;
-        }
         public ErrorOr<Success> AddrefreshTokens(RefreshToken refreshToken)
         {
             if (_refreshTokens.Contains(refreshToken))
@@ -125,7 +109,7 @@ namespace Web.Domain.Users
             SoftDelete(updatedById);
             _restaurant.Clear();
             _refreshTokens.Clear();
-            _addresses.Clear();
+            _Addresses.Clear();
         }
 
     }

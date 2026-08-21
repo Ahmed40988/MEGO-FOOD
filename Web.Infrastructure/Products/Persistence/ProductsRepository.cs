@@ -1,11 +1,12 @@
-﻿using Web.Application.Common;
+﻿using ErrorOr;
+using System.Linq.Dynamic.Core;
+using Web.Application.Common;
 using Web.Application.Common.Interfaces;
 using Web.Application.Common.Pagination;
 using Web.Application.Products.ProductDTO;
-using System.Linq.Dynamic.Core;
 using Web.Application.Restaurants.Contracts;
+using Web.Domain.BaseCategories;
 using Web.Infrastructure.Common.Persistence.Data;
-using ErrorOr;
 
 namespace Web.Infrastructure.Products.Persistence
 {
@@ -42,7 +43,7 @@ namespace Web.Infrastructure.Products.Persistence
         }
 
         public async Task<PaginatedList<ProductResponse>> GetByCategoryAsync(RequestFilters filters,
-            Guid categoryId,
+            Guid?categoryId,
             CancellationToken cancellationToken = default)
         
             {
@@ -51,8 +52,17 @@ namespace Web.Infrastructure.Products.Persistence
                     .AsNoTracking()
                     .AsQueryable();
 
+            if (categoryId.HasValue)
+            {
+                query = query.Where(b => b.MenuCategoryId == categoryId.Value);
+            }
 
-                if (!string.IsNullOrEmpty(filters.SearchValue))
+            if(filters.TopRaing==true)
+            {
+                query = query.Where(b => b.Rating>=4).OrderByDescending(x=>x.Rating).Take(30);
+            }
+
+            if (!string.IsNullOrEmpty(filters.SearchValue))
                 {
                     query = query.Where(b =>
                         b.Name.Contains(filters.SearchValue) ||
@@ -85,6 +95,7 @@ namespace Web.Infrastructure.Products.Persistence
                         x.Description
                         ,x.ImageUrl
                         ,x.Price
+                        ,x.Rating
                         ))
                     .ToListAsync(cancellationToken);
 
@@ -147,7 +158,8 @@ namespace Web.Infrastructure.Products.Persistence
                 p.Name,
                 p.Description,
                 p.ImageUrl,
-                p.Price)).ToList();
+                p.Price,
+                p.Rating)).ToList();
         }
 
         public Task UpdateAsync(Product product, CancellationToken cancellationToken = default)

@@ -4,5 +4,5 @@ using Web.Application.Restaurants.Contracts;
 
 namespace Web.Application.Restaurants.Queries.ListRestaurant
 {
-    public record ListRestaurantQuerys(RequestFilters Filters) : IRequest<ErrorOr<PaginatedList<RestaurantResponce>>>;
+    public record ListRestaurantQuerys(Guid?BaseCategoryId,RequestFilters Filters) : IRequest<ErrorOr<PaginatedList<RestaurantResponce>>>;
 }

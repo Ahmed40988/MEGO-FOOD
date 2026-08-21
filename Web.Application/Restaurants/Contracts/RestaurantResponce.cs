@@ -4,7 +4,9 @@
             Guid Id,
           string name,
           string description,
+          decimal rating,
             Guid  BaseCatgoryId
+
         );
 
 }

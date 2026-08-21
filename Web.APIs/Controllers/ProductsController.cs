@@ -53,7 +53,7 @@ namespace Web.APIs.Controllers
         /// Get all products by MenuCategoryId
         /// </summary>
         [HttpGet("Get_Products_By_Category")]
-        public async Task<IActionResult> GetProductsByCategory([FromQuery]RequestFilters filters,[FromQuery] Guid categoryId)
+        public async Task<IActionResult> GetProductsByCategory([FromQuery]RequestFilters filters,[FromQuery] Guid?categoryId)
         {
             var query = new GetProductsByCategoryQuery(filters, categoryId);
             var result = await _mediator.Send(query);

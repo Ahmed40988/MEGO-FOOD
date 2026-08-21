@@ -45,19 +45,35 @@ namespace Web.APIs.Controllers
         }
 
 
-        [HttpGet("Get_All_Restaurantes")]
-        public async Task<IActionResult> GetAllRestaurantes([FromQuery] RequestFilters filters)
+
+        /// <summary>
+        /// Retrieve a paginated list of restaurants with optional filtering.
+        /// </summary>
+        /// <param name="baseCategoryId">
+        /// Optional base category identifier to filter restaurants.
+        /// </param>
+        /// <param name="filters">
+        /// Filtering, sorting, and pagination parameters.
+        /// </param>
+        /// <response code="200">Restaurants retrieved successfully.</response>
+        /// <response code="400">Invalid request parameters.</response>
+        /// <response code="401">Unauthorized.</response>
+        /// <response code="404">No restaurants found.</response>
+        [HttpGet("Get_All_Restaurantes_ByBaseCategoryId")]
+        public async Task<IActionResult> GetAllRestaurantes(
+            [FromQuery] Guid? baseCategoryId,
+            [FromQuery] RequestFilters filters)
         {
-            var Query = new ListRestaurantQuerys(filters);
+            var Query = new ListRestaurantQuerys(baseCategoryId, filters);
             var result = await _mediator.Send(Query);
+
             return result.Match(
-           list => Ok(list),
-           errors => ToProblem(errors)
-       );
+                list => Ok(list),
+                errors => ToProblem(errors)
+            );
         }
 
-
-        [HttpGet("Get_RestaurantBy_ID/{Id}")]
+        [HttpGet("Get_RestaurantBy_RestaurantID/{Id}")]
         public async Task<IActionResult> GetRestaurantByID([FromRoute] Guid Id)
         {
             var Query = new GetRestaurantQuery(Id);

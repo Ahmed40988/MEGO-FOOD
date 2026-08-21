@@ -8,7 +8,7 @@ namespace Web.Application.Common.Interfaces
         Task<Restaurant?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Restaurant?> GetByNameAsync(string Name, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Restaurant>> SearchAsync(string keyword, CancellationToken cancellationToken = default);
-        Task<PaginatedList<RestaurantResponce>> ListRestaurants(RequestFilters filters,CancellationToken cancellationToken = default);
+        Task<PaginatedList<RestaurantResponce>> ListRestaurants(Guid? baseCategoryId, RequestFilters filters,CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(Guid CategorytId, CancellationToken cancellationToken = default);
 
         Task AddAsync(Restaurant restaurantCategory, CancellationToken cancellationToken = default);

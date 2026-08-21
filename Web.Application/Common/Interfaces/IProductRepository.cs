@@ -5,7 +5,7 @@ using Web.Application.Products.ProductDTO;
 public interface IProductRepository
 {
     Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<PaginatedList<ProductResponse>> GetByCategoryAsync(RequestFilters Filters ,Guid categoryId, CancellationToken cancellationToken = default);
+    Task<PaginatedList<ProductResponse>> GetByCategoryAsync(RequestFilters Filters ,Guid ?categoryId, CancellationToken cancellationToken = default);
     Task<ErrorOr<List<ProductResponse>>> SearchAsync(string keyword, CancellationToken cancellationToken = default);
     Task<List<Product>> ListBymenuCategoryIdAsync(Guid MenuCategoryId);
     Task<bool> ExistsAsync(Guid productId, CancellationToken cancellationToken = default);

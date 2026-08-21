@@ -1,14 +1,16 @@
+using Web.Application.Common.File;
+
 namespace Web.Application.Products.Commands.CreateProduct;
 
 public class CreateProductCommandHandler(
     IProductRepository productRepository,
     IUserRepository userRepository,
     IMenuCategoryRepository menuCategoryRepository,
-    IFileHelperService fileHelperService,
+    IFileStorageService fileStorageService,
     IUnitOfWork unitOfWork)
     : IRequestHandler<CreateProductCommand, ErrorOr<Guid>>
 {
-    private readonly IFileHelperService _fileHelperService = fileHelperService;
+    private readonly IFileStorageService _fileStorageService = fileStorageService;
     private readonly IUnitOfWork _unitOfWork= unitOfWork;
     private readonly IProductRepository _productRepository;
     private readonly IUserRepository _userRepository = userRepository;
@@ -25,15 +27,19 @@ public class CreateProductCommandHandler(
         if (category is null)
             return Error.NotFound("MenuCategory.NotFound","MenuCategory not found");
 
-        string imageUrl = string.Empty;
-
+        var imagePath = string.Empty;
         if (command.Image is not null)
         {
-            imageUrl = _fileHelperService.UploadFile(command.Image, "Products");
+            using var stream = command.Image.OpenReadStream();
+            imagePath = await _fileStorageService.SaveFileAsync(stream, command.Image.FileName, "Products-images");
         }
 
+        if (string.IsNullOrWhiteSpace(imagePath))
+            return Error.Validation("ImageUploadFailed", "Failed to upload image");
 
-        var product = new Product(command.Name,command.Description,imageUrl,command.Price,command.MenuCategoryId);
+
+
+        var product = new Product(command.Name,command.Description,imagePath,command.Price,command.MenuCategoryId);
         var result=category.AddProduct(product);
         if (result.IsError)
             return result.Errors;

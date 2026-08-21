@@ -25,9 +25,17 @@ namespace Web.Infrastructure.Common.Persistence.Data
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<orderitem> Orderitems => Set<orderitem>();
         public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
+        public DbSet<RestaurantAdress> RestaurantAdresses => Set<RestaurantAdress>();
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<UserAddress>().UseTpcMappingStrategy();
+            modelBuilder.Entity<RestaurantAdress>().UseTpcMappingStrategy();
+
+
             base.OnModelCreating(modelBuilder); // Important for Identity
 
             #region explanation

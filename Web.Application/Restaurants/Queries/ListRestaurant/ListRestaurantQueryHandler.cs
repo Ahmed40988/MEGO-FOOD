@@ -10,11 +10,11 @@ namespace Web.Application.Restaurants.Queries.ListRestaurant
 
         public async Task<ErrorOr<PaginatedList<RestaurantResponce>>> Handle(ListRestaurantQuerys command, CancellationToken cancellationToken)
         {
-            var listrestaurant = await _restaurantRepository.ListRestaurants(command.Filters);
+            var listrestaurant = await _restaurantRepository.ListRestaurants(command.BaseCategoryId,command.Filters);
 
             if(listrestaurant == null)
             {
-                return Error.NotFound("Restaurants.Empty ", "Restaurants is  Empty !");
+                return Error.NotFound("Restaurants.Empty ", "Restaurants is  Empty or BaseCategoryId is not found !");
             }
             return listrestaurant;
 

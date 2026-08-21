@@ -12,7 +12,7 @@ namespace Web.Application.Restaurants.Queries.GetRestaurant
 
             return restaurant is null ?
                 Error.NotFound("Restaurant.NotFound", "Restaurant by this Id is not found !")
-                : new RestaurantResponce(restaurant.Id, restaurant.Name, restaurant.Description, restaurant.BaseCatgoryId);
+                : new RestaurantResponce(restaurant.Id, restaurant.Name, restaurant.Description,restaurant.Rating, restaurant.BaseCatgoryId);
 
         }
     }

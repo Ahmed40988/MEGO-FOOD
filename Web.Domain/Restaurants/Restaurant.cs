@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Web.Domain.Addresses;
 using Web.Domain.BaseCategories;
 using Web.Domain.BaseModels;
 using Web.Domain.MenuCategories;
@@ -11,6 +12,7 @@ namespace Web.Domain.Restaurants
         public Guid Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public string Description { get; private set; } = string.Empty;
+        public decimal Rating { get; set; }
         public string AppUserId { get; private set; } = string.Empty;
         public AppUser AppUser { get; private set; } = default!;
         public Guid BaseCatgoryId { get; private set; }
@@ -20,12 +22,16 @@ namespace Web.Domain.Restaurants
         public IReadOnlyCollection<MenuCategory> MenuCategories => _menuCategories.AsReadOnly();
 
 
+        private readonly List<RestaurantAdress> _Addresses = new();
+        public IReadOnlyCollection<RestaurantAdress> Addresses => _Addresses.AsReadOnly();
+
+
         private Restaurant() { }
         public Restaurant(
           string name,
           string description,
           string userId,
-            Guid baseCatgoryId
+          Guid baseCatgoryId
             )
         {
             Id = Guid.NewGuid();
@@ -103,6 +109,7 @@ namespace Web.Domain.Restaurants
         {
             SoftDelete(updatedById);
             _menuCategories.Clear();
+            _Addresses.Clear();
         }
 
 

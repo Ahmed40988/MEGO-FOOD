@@ -206,66 +206,31 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
-            modelBuilder.Entity("Web.Domain.Addresses.Address", b =>
+            modelBuilder.Entity("Web.Domain.Addresses.RestaurantAdress", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("Createdon")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("UpdatedByid")
+                    b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Updatedon")
-                        .HasColumnType("datetime2");
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("RestaurantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("City");
+                    b.HasIndex("RestaurantId");
 
-                    b.HasIndex("Country");
+                    b.ToTable("RestaurantAdresses");
 
-                    b.HasIndex("PostalCode");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Addresses", (string)null);
+                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("Web.Domain.Addresses.UserAddress", b =>
@@ -292,6 +257,8 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserAddresses");
+
+                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("Web.Domain.BaseCategories.BaseCategory", b =>
@@ -311,8 +278,8 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -410,6 +377,9 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("AddressId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Createdon")
                         .HasColumnType("datetime2");
 
@@ -443,7 +413,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressId1");
 
                     b.HasIndex("UserId");
 
@@ -478,6 +448,9 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Rating")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UpdatedByid")
                         .HasColumnType("nvarchar(max)");
@@ -647,21 +620,21 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.Navigation("MenuCategory");
                 });
 
-            modelBuilder.Entity("Web.Domain.Addresses.Address", b =>
+            modelBuilder.Entity("Web.Domain.Addresses.RestaurantAdress", b =>
                 {
-                    b.HasOne("Web.Domain.Users.AppUser", "User")
+                    b.HasOne("Web.Domain.Restaurants.Restaurant", "Restaurant")
                         .WithMany("Addresses")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("Web.Domain.Addresses.UserAddress", b =>
                 {
                     b.HasOne("Web.Domain.Users.AppUser", "User")
-                        .WithMany()
+                        .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -710,9 +683,9 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Web.Domain.Orders.Order", b =>
                 {
-                    b.HasOne("Web.Domain.Addresses.Address", "Address")
+                    b.HasOne("Web.Domain.Addresses.UserAddress", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId")
+                        .HasForeignKey("AddressId1")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -800,6 +773,8 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Web.Domain.Restaurants.Restaurant", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("MenuCategories");
                 });
 

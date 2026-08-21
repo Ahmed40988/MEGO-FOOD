@@ -7,6 +7,6 @@ public class GetProductsByCategoryQueryValidator : AbstractValidator<GetProducts
 {
     public GetProductsByCategoryQueryValidator()
     {
-        RuleFor(x=>x.CategoryId).NotEmpty();
+     
     }
 }

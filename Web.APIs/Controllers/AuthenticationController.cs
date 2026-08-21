@@ -3,6 +3,7 @@ using Web.Application.Accounts.Commands.CompleteProfile;
 using Web.Application.Accounts.Commands.ConfirmEmail;
 using Web.Application.Accounts.Commands.CreateAccount;
 using Web.Application.Accounts.Commands.ForgotPassword;
+using Web.Application.Accounts.Commands.GetProfile;
 using Web.Application.Accounts.Commands.Login;
 using Web.Application.Accounts.Commands.RefreshToken;
 using Web.Application.Accounts.Commands.ResendConfirmationEmail;
@@ -220,11 +221,24 @@ namespace Web.APIs.Controllers
         {
             var Userid = User.GetUserId();
             var commmand = new CompleteProfileCommand(Userid,
-                Request.FullName, Request.Phone, Request.DateOfBirth, Request.Adresss, Request.Image);
+                Request.FullName, Request.Phone, Request.DateOfBirth, Request.Image);
             var result = await _mediator.Send(commmand);
 
             return result.Match(
                 token => Ok(),
+                errors => ToProblem(errors)
+            );
+        }
+
+        [Authorize]
+        [HttpGet("Get_Profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var Userid = User.GetUserId();
+            var commmand = new GetProfileCommand(Userid);
+            var result = await _mediator.Send(commmand);
+            return result.Match(
+                profie => Ok(profie),
                 errors => ToProblem(errors)
             );
         }

@@ -11,6 +11,6 @@ namespace Web.Application.Common.Interfaces
     {
          Task AddAddressAsync(UserAddress Entity ,CancellationToken cancellationToken);
 
-        Task<UserAddress> UserAdressExist(string UserId, double Lat, double Lng, CancellationToken cancellationToken);
+        Task<BaseAddress> UserAdressExist(string UserId, double Lat, double Lng, CancellationToken cancellationToken);
 }
 }

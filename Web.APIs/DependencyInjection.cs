@@ -41,7 +41,6 @@ namespace Web.APIs
 
             return services;
         }
-
         private static IServiceCollection AddSwaggerWithAuth(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
@@ -55,19 +54,24 @@ namespace Web.APIs
                     Description = "Authentication & Authorization APIs"
                 });
 
-                // 🔹 XML Documentation
+                // XML Documentation
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
 
-                // 🔹 JWT Auth
+                if (File.Exists(xmlPath))
+                {
+                    options.IncludeXmlComments(xmlPath);
+                }
+
+                // JWT Authentication
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    In = ParameterLocation.Header,
-                    Description = "Enter JWT token with Bearer prefix (Example: 'Bearer eyJhbGciOi...')",
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter JWT Token Only"
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
