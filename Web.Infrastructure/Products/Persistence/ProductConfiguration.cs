@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text.Json;
 
 namespace Web.Infrastructure.Products.Persistence
 {
@@ -17,6 +18,11 @@ namespace Web.Infrastructure.Products.Persistence
 
             builder.Property(p => p.Description)
                    .HasMaxLength(500);
+
+            builder.Property(x => x.ImagesURL)
+    .HasConversion(
+        v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+        v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>());
 
             builder.Property(p => p.Price)
                    .HasColumnType("decimal(18,2)")

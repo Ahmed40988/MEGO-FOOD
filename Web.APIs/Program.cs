@@ -1,28 +1,41 @@
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Web.Application;
+using Web.Application.Common.Interfaces;
 using Web.Infrastructure;
+using Web.Infrastructure.Common.Persistence.Data;
 
 
 namespace Web.APIs
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddDependencies(builder.Configuration);
 
             builder.Services
                     .AddApplication()
                     .AddInfrastructure(builder.Configuration);
 
-            builder.Host.UseSerilog((Context, configuration) =>
-       configuration.ReadFrom.Configuration(Context.Configuration)
-       );
-            var app = builder.Build();
+            builder.Host.UseSerilog((context, configuration) =>
+                configuration.ReadFrom.Configuration(context.Configuration));
 
+            var app = builder.Build();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //    var seedRepository = scope.ServiceProvider.GetRequiredService<ISeedRepository>();
+
+            //    if (!await context.BaseCategories.AnyAsync())
+            //    {
+            //        await seedRepository.SeedAsync(
+            //            "19957974-b8df-4aeb-be6d-8e951af0f8eb",
+            //            CancellationToken.None);
+            //    }
+            //}
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -44,7 +57,7 @@ namespace Web.APIs
 
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }
