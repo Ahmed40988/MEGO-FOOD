@@ -21,24 +21,21 @@ public class UpdateProductCommandHandler(
         if(product is null)
             return Error.NotFound("Product.NotFound","Product not found");
 
-        string imageUrl = product.ImageUrl;
+        var imageUrls = product.ImagesURL.ToList();
 
-        if (command.Image is not null)
+        foreach (var image in command.ImagesURL!)
         {
-            using var stream = command.Image.OpenReadStream();
+            using var stream = image.OpenReadStream();
 
-            imageUrl = await _fileStorageService.UpdateFileAsync(
+            var imageUrl = await _fileStorageService.SaveFileAsync(
                 stream,
-                command.Image.FileName,
-                product.ImageUrl,
+                image.FileName,
                 "Products-images");
-            if (string.IsNullOrWhiteSpace(imageUrl))
-            {
-                return Error.Failure("FileUpload.Failed", "Failed to upload the image file.");
-            }
+
+            imageUrls.Add(imageUrl);
         }
 
-        product.Update(command.Name,command.Description,imageUrl,command.Price,command.UserId);
+        product.Update(command.Name,command.Description,imageUrls,command.Price,command.UserId);
 
         await unitOfWork.CommitChangesAsync();
         return product.Id;

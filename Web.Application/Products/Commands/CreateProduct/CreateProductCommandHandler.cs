@@ -27,19 +27,27 @@ public class CreateProductCommandHandler(
         if (category is null)
             return Error.NotFound("MenuCategory.NotFound","MenuCategory not found");
 
-        var imagePath = string.Empty;
-        if (command.Image is not null)
+        var imagePaths = new List<string>();
+
+        if (command.ImagesURL is not null && command.ImagesURL.Any())
         {
-            using var stream = command.Image.OpenReadStream();
-            imagePath = await _fileStorageService.SaveFileAsync(stream, command.Image.FileName, "Products-images");
+            foreach (var image in command.ImagesURL)
+            {
+                using var stream = image.OpenReadStream();
+
+                var imagePath = await _fileStorageService.SaveFileAsync(
+                    stream,
+                    image.FileName,
+                    "Products-images");
+
+                if (string.IsNullOrWhiteSpace(imagePath))
+                    return Error.Validation("ImageUploadFailed", "Failed to upload image");
+
+                imagePaths.Add(imagePath);
+            }
         }
 
-        if (string.IsNullOrWhiteSpace(imagePath))
-            return Error.Validation("ImageUploadFailed", "Failed to upload image");
-
-
-
-        var product = new Product(command.Name,command.Description,imagePath,command.Price,command.MenuCategoryId);
+        var product = new Product(command.Name,command.Description,imagePaths,command.Price,command.MenuCategoryId);
         var result=category.AddProduct(product);
         if (result.IsError)
             return result.Errors;

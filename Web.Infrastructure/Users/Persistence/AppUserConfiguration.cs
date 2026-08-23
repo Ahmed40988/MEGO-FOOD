@@ -16,6 +16,8 @@ namespace Web.Infrastructure.Users.Persistence
              .WithOwner()
              .HasForeignKey("UserId");
 
+            builder.Property(x => x.Createdon)
+       .HasDefaultValueSql("GETUTCDATE()");
 
 
 

@@ -12,7 +12,6 @@ namespace Web.Application.Accounts.AccountDTO
        string Email,
        string FullName,
        string? PhotoUrl,
-       Gender Gender,
        DateOnly DateOfBirth,
        DateTime CreatedOn
    );

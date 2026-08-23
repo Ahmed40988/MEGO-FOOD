@@ -80,11 +80,11 @@ namespace Web.Infrastructure.Seeding
                     foreach (var meal in restaurantMeals)
                     {
                         var product = new Product(
-                            meal.strMeal,
-                            "",
-                            meal.strMealThumb,
-                            Random.Shared.Next(50, 200),
-                            menu.Id);
+                         meal.strMeal,
+                         "",
+                         new List<string> { meal.strMealThumb },
+                         Random.Shared.Next(50, 200),
+                         menu.Id);
 
                         product.Rating = SeedHelper.GenerateRating();
 

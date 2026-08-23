@@ -6,7 +6,8 @@ public class Product : BaseModel
     public Guid Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
-    public string ImageUrl { get; private set; } = string.Empty;
+
+    public List<string>ImagesURL { get; private set; } = new List<string>();
 
     public decimal Price { get; private set; }
 
@@ -21,7 +22,7 @@ public class Product : BaseModel
     public Product(
         string name,
         string description,
-        string imageUrl,
+        List<string> imagesurl,
         decimal price,
         Guid menuCategoryId)
     {
@@ -29,16 +30,17 @@ public class Product : BaseModel
 
         SetName(name);
         SetDescription(description);
-        SetImageUrl(imageUrl);
+        SetImagesURL(imagesurl);
         SetPrice(price);
         SetMenuCategoryId(menuCategoryId);
+
     }
 
-    public void Update(string name, string description, string imageUrl, decimal price, string updatedById)
+    public void Update(string name, string description, List<string> imagesurl, decimal price, string updatedById)
     {
         SetName(name);
         SetDescription(description);
-        SetImageUrl(imageUrl);
+        SetImagesURL(imagesurl);
         SetPrice(price);
         Touch(updatedById);
     }
@@ -62,12 +64,12 @@ public class Product : BaseModel
     {
         Description = description?.Trim() ?? string.Empty;
     }
-
-    private void SetImageUrl(string url)
+    private void SetImagesURL(List<string> imagesURL)
     {
-        ImageUrl = url?.Trim() ?? string.Empty;
+        if (imagesURL == null)
+            throw new ArgumentNullException(nameof(imagesURL), "ImagesURL cannot be null.");
+        ImagesURL = imagesURL.Select(url => url?.Trim() ?? string.Empty).ToList();
     }
-
     private void SetPrice(decimal price)
     {
         if (price < 0)

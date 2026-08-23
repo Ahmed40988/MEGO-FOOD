@@ -16,6 +16,6 @@ public class GetProductByIdQueryHandler(IProductRepository productRepository)
         if(product is null)
             return Error.NotFound("Product.NotFound","Product not found");
 
-        return new ProductResponse(product.Id,product.Name,product.Description,product.ImageUrl,product.Price,product.Rating);
+        return new ProductResponse(product.Id,product.Name,product.Description,product.ImagesURL,product.Price,product.Rating);
     }
 }

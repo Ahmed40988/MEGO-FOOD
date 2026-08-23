@@ -22,8 +22,13 @@ public class DeleteProductCommandHandler(
         if(product is null)
             return Error.NotFound("Product.NotFound","Product not found");
 
-        if (!string.IsNullOrEmpty(product.ImageUrl))
-            await _fileStorageService.DeleteFileAsync(product.ImageUrl);
+        if (product.ImagesURL is not null && product.ImagesURL.Any())
+        {
+            foreach (var image in product.ImagesURL)
+            {
+                await _fileStorageService.DeleteFileAsync(image);
+            }
+        }
 
         product.Delete(command.UserId);
         await productRepository.UpdateAsync(product);

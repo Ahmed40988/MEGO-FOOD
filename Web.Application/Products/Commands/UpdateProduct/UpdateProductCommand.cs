@@ -9,7 +9,7 @@ public record UpdateProductCommand(
     Guid ProductId,
     string Name,
     string Description,
-    IFormFile? Image,
+    List<IFormFile>? ImagesURL,
     decimal Price,
     string UserId
 ) : IRequest<ErrorOr<Guid>>;

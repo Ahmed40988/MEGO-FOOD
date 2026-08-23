@@ -8,7 +8,7 @@ namespace Web.Application.Products.Commands.CreateProduct;
 public record CreateProductCommand(
     string Name,
     string Description,
-    IFormFile? Image,
+      List<IFormFile>? ImagesURL,
     decimal Price,
     Guid MenuCategoryId,
     string AdminId

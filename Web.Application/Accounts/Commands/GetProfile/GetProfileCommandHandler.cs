@@ -23,7 +23,6 @@ namespace Web.Application.Accounts.Commands.GetProfile
                 user.Email!,
                 user.FullName,
                 user.PhotoURl,
-                user.gender,
                 user.DateOfBirth,
                 user.Createdon
             );

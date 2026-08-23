@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Web.Domain.Addresses;
 using Web.Domain.RefreshTokens;
 using Web.Domain.Restaurants;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Web.Domain.Users
 {
     public class AppUser : IdentityUser
     {
         public string FullName { get; set; } = string.Empty;
-        public Gender gender { get; set; }
         public string? PhotoURl { get; set; } = string.Empty;
         public DateTime Createdon { get; private set; } = DateTime.UtcNow;
         public bool Deleted { get; private set; }
@@ -111,6 +111,12 @@ namespace Web.Domain.Users
             _refreshTokens.Clear();
             _Addresses.Clear();
         }
-
+        public bool IsProfileCompleted()
+        {
+            return !string.IsNullOrWhiteSpace(FullName)
+                   && !string.IsNullOrWhiteSpace(PhoneNumber)
+                   && DateOfBirth != default
+                   && !string.IsNullOrWhiteSpace(PhotoURl);
+        }
     }
 }

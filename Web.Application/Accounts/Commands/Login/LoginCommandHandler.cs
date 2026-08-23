@@ -52,13 +52,18 @@ namespace Web.Application.Accounts.Commands.Login
 
             await _userManager.UpdateAsync(user);
 
+
+            var isProfileComplete  = user.IsProfileCompleted();
+
             return new TokenDTO
             {
                 UserId = user.Id,
                 Token = jwt.Token,
                 expiresIn = jwt.expiresIn,
                 RefreshToken = refreshTokenValue,
-                RefreshTokenExpiration = refreshTokenExpiration
+                RefreshTokenExpiration = refreshTokenExpiration,
+                IsCompleteProfile = isProfileComplete
+
             };
 
         }

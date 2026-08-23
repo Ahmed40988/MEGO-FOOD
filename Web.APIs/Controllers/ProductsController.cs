@@ -35,7 +35,7 @@ namespace Web.APIs.Controllers
             var command = new CreateProductCommand(
                 request.Name,
                 request.Description,
-                request.Image,
+                request.Images,
                 request.Price,
                 request.MenuCategoryId,
                 adminId
@@ -118,7 +118,7 @@ namespace Web.APIs.Controllers
                 Id,
                 request.Name,
                 request.Description,
-                request.Image,
+                request.Images,
                 request.Price,
                 adminId);
 

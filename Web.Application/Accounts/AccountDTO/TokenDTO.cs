@@ -8,6 +8,7 @@
 
         public string RefreshToken { get; set; } = string.Empty;
         public DateTime RefreshTokenExpiration { get; set; }
+        public bool IsCompleteProfile { get; set; } = false;
 
     }
 }

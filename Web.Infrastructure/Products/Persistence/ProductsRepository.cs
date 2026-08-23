@@ -88,18 +88,18 @@ namespace Web.Infrastructure.Products.Persistence
                     query = query.Skip(skip).Take(filters.PageSize);
                 }
 
-                var items = await query
-                    .Select(x => new ProductResponse(
-                        x.Id,
-                        x.Name,
-                        x.Description
-                        ,x.ImageUrl
-                        ,x.Price
-                        ,x.Rating
-                        ))
-                    .ToListAsync(cancellationToken);
+            var items = await query
+ .Select(x => new ProductResponse(
+     x.Id,
+     x.Name,
+     x.Description,
+     x.ImagesURL,
+     x.Price,
+     x.Rating
+     ))
+ .ToListAsync(cancellationToken);
 
-                return new PaginatedList<ProductResponse>
+            return new PaginatedList<ProductResponse>
                     (items,
                     filters.PageNumber,
                     totalCount,
@@ -154,12 +154,12 @@ namespace Web.Infrastructure.Products.Persistence
                 .ToList();
 
             return result.Select(p => new ProductResponse(
-                p.Id,
-                p.Name,
-                p.Description,
-                p.ImageUrl,
-                p.Price,
-                p.Rating)).ToList();
+      p.Id,
+      p.Name,
+      p.Description,
+      p.ImagesURL,
+      p.Price,
+      p.Rating)).ToList();
         }
 
         public Task UpdateAsync(Product product, CancellationToken cancellationToken = default)
