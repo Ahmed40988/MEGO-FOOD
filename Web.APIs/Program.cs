@@ -24,6 +24,7 @@ namespace Web.APIs
                 configuration.ReadFrom.Configuration(context.Configuration));
 
             var app = builder.Build();
+            //Seeding
             //using (var scope = app.Services.CreateScope())
             //{
             //    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -32,7 +33,7 @@ namespace Web.APIs
             //    if (!await context.BaseCategories.AnyAsync())
             //    {
             //        await seedRepository.SeedAsync(
-            //            "19957974-b8df-4aeb-be6d-8e951af0f8eb",
+            //            "9912cd0d-78a6-49a3-84b7-2dcc17cce814",
             //            CancellationToken.None);
             //    }
             //}

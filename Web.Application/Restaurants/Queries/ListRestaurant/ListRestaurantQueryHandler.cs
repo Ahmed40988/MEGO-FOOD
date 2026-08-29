@@ -10,6 +10,7 @@ namespace Web.Application.Restaurants.Queries.ListRestaurant
 
         public async Task<ErrorOr<PaginatedList<RestaurantResponce>>> Handle(ListRestaurantQuerys command, CancellationToken cancellationToken)
         {
+
             var listrestaurant = await _restaurantRepository.ListRestaurants(command.BaseCategoryId,command.Filters);
 
             if(listrestaurant == null)

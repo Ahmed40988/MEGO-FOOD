@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Web.Domain.Users;
+﻿using NetTopologySuite.Geometries;
 
 
 namespace Web.Domain.Addresses
@@ -11,23 +6,39 @@ namespace Web.Domain.Addresses
     public abstract class BaseAddress
     {
         public Guid Id { get; private set; }
-
         public double Latitude { get; private set; }
         public double Longitude { get; private set; }
         public string? Address { get; private set; }
+        public Point Location { get; private set; } = default!;
 
-        private BaseAddress() { }
+        protected BaseAddress() { }
 
-        public BaseAddress( double lat, double lng, string? address)
+        protected BaseAddress(
+            double latitude,
+            double longitude,
+            string? address)
         {
-            Latitude = lat;
-            Longitude = lng;
+            Latitude = latitude;
+            Longitude = longitude;
+
+            Location = new Point(longitude, latitude)
+            {
+                SRID = 4326
+            };
             Address = address;
+
         }
 
-        public void UpdateAddress(string address)
+        public void UpdateCoordinates(double latitude, double longitude, string? address)
         {
+            Latitude = latitude;
+            Longitude = longitude;
             Address = address;
+
+            Location = new Point(longitude, latitude)
+            {
+                SRID = 4326
+            };
         }
     }
 }

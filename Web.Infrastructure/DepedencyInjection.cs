@@ -53,13 +53,18 @@ namespace Web.Infrastructure
 
             return services;
         }
-        private static IServiceCollection AddDatabaseConfig(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddDatabaseConfig(
+        this IServiceCollection services,
+        IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection") ??
-                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException(
+                    "Connection string 'DefaultConnection' not found.");
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(
+                    connectionString,
+                    sql => sql.UseNetTopologySuite()));
 
             return services;
         }

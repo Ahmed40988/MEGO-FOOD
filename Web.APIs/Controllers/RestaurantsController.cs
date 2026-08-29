@@ -62,8 +62,9 @@ namespace Web.APIs.Controllers
         [HttpGet("Get_All_Restaurantes_ByBaseCategoryId")]
         public async Task<IActionResult> GetAllRestaurantes(
             [FromQuery] Guid? baseCategoryId,
-            [FromQuery] RequestFilters filters)
+            [FromQuery] RestaurantFilters filters)
         {
+             filters.UserId = User.GetUserId();
             var Query = new ListRestaurantQuerys(baseCategoryId, filters);
             var result = await _mediator.Send(Query);
 

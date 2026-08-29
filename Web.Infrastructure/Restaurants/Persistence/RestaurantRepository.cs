@@ -1,7 +1,7 @@
-﻿using Web.Application.BaseCategories.BaseCategoryDTO;
-using Web.Application.Common;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
 using System.Linq.Dynamic.Core;
-
+using Web.Application.BaseCategories.BaseCategoryDTO;
+using Web.Application.Common;
 using Web.Application.Common.Interfaces;
 using Web.Application.Common.Pagination;
 using Web.Application.Restaurants.Contracts;
@@ -42,15 +42,20 @@ namespace Web.Infrastructure.Restaurants.Persistence
             return await _dbContext.Restaurants.FirstOrDefaultAsync(b => b.Name == Name && !b.Deleted, cancellationToken);
         }
 
-        public async Task<PaginatedList<RestaurantResponce>> ListRestaurants(Guid ?baseCategoryId,
-            RequestFilters filters,
+        public async Task<PaginatedList<RestaurantResponce>> ListRestaurants( Guid? baseCategoryId,
+            RestaurantFilters filters,
             CancellationToken cancellationToken = default)
         {
-
+           
             var query = _dbContext.Restaurants
                 .Where(b => !b.Deleted)
                 .AsNoTracking()
                 .AsQueryable();
+
+           var userPoint=await _dbContext.Users
+                .Where(u => u.Id == filters.UserId)
+                .Select(u => u.Addresses.FirstOrDefault()!.Location)
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (baseCategoryId.HasValue)
             {
@@ -60,6 +65,19 @@ namespace Web.Infrastructure.Restaurants.Persistence
             if (filters.TopRaing == true)
             {
                 query = query.Where(b => b.Rating >= 4).OrderByDescending(x => x.Rating).Take(30);
+            }
+            if(filters.OpenNow == true)
+            {
+                query = query.Where(b => b.IsOpen == true);
+            }
+
+            if(filters.FastDelivery == true)
+            {
+                query = query.Where(b => b.HasFastDelivery == true);
+            }
+            if(filters.Nearest == true)
+            {
+                query = query.OrderBy(x => x.Addresses.FirstOrDefault()!.Location.Distance(userPoint));
             }
             if (!string.IsNullOrEmpty(filters.SearchValue))
             {

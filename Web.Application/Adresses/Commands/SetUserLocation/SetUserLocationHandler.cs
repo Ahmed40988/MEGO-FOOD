@@ -44,7 +44,7 @@ namespace Web.Application.Adresses.Commands.SetUserLocation
             {
                 if (!string.IsNullOrWhiteSpace(address))
                 {
-                    existingAddress.UpdateAddress(address);
+                    existingAddress.UpdateCoordinates(request.Lat, request.Lng, address);
                 }
 
                 await _unitOfWork.CommitChangesAsync();
